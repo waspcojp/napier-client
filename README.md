@@ -1,4 +1,4 @@
-# Napier
+# Napier Client
 
 Japanese document is [here](README_jp.md)
 
