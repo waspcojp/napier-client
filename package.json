@@ -1,14 +1,14 @@
 {
   "name": "napier",
   "version": "2.5.0",
-  "description": "simple web proxy service",
+  "description": "simple web proxy service client",
   "author": "Masami Ogoshi",
-  "homepage": "https://github.com/waspcojp/napier",
+  "homepage": "https://github.com/waspcojp/napier-client",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "cli": "node ./client/napier-cli.js"
   },
-  "license": "AGPL-3.0-or-later",
+  "license": "Apache-2.0-or-later",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.1.2",
     "assert": "^2.0.0",

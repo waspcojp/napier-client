@@ -1,10 +1,10 @@
 {
   "name": "napier",
   "version": "2.5.0",
-  "description": "simple web proxy service",
+  "description": "simple web proxy service GUI client",
   "main": "main.js",
   "author": "Masami Ogoshi",
-  "homepage": "https://github.com/waspcojp/napier",
+  "homepage": "https://github.com/waspcojp/napier-client",
   "scripts": {
     "build-production": "webpack -c --mode production",
     "webbuild": "webpack -c webpack.config.js --mode development",
@@ -59,7 +59,7 @@
       "allowToChangeInstallationDirectory": true
     }
   },
-  "license": "AGPL-3.0-or-later",
+  "license": "Apache-2.0-or-later",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.1.2",
     "assert": "^2.0.0",
