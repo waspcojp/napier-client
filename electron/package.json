@@ -6,23 +6,21 @@
   "author": "Masami Ogoshi",
   "homepage": "https://github.com/waspcojp/napier-client",
   "scripts": {
-    "build-production": "webpack -c --mode production",
-    "webbuild": "webpack -c webpack.config.js --mode development",
+    "webbuild": "webpack -c webpack.config.js --mode production",
     "watch": "NODE_OPTIONS=--openssl-legacy-provider webpack -c webpack.config.js --watch",
-    "electron-build:win": "electron-builder --win --x64",
-    "electron-build:linux": "electron-builder --linux --arm64"
+    "build:win": "electron-builder --win --x64",
+    "build:linux": "electron-builder --linux --arm64"
   },
   "build": {
     "appId": "com.napier-net.electron",
     "productName": "napier",
     "files": [
-      "main.js",
-      "index.html",
-      "package.json",
-      "renderer.js",
-      "proxy.js",
-      "preload.js",
-      "api.js",
+      "./main.js",
+      "./index.html",
+      "./renderer.js",
+      "./proxy.js",
+      "./preload.js",
+      "./api.js",
       "./client/index.js",
       "./client/web-server.js",
       "./client/content.svelte",
