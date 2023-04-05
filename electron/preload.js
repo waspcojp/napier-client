@@ -75,6 +75,36 @@ const password = (old_pass, new_pass) => {
         }
     });
 }
+const getUser = ()  => {
+    console.log('preload.js getUser');
+    return new Promise ((resolve, reject) => {
+        loginPromise.then(() => {
+            console.log('user:get');
+            ipcRenderer.invoke('user:get').then((res) => {
+                console.log('getUser', {res});
+                resolve(res);
+            }).catch((e) => {
+                reject();
+            });
+        });
+    });
+}
+
+const putUser = (user) => {
+    return new Promise ((resolve, reject) => {
+        loginPromise.then(() => {
+            ipcRenderer.invoke('user:put', user).then((res) => {
+                if  ( res.result === 'OK' ) {
+                    resolve();
+                } else {
+                    reject();
+                }
+            }).catch((e) => {
+                reject();
+            });
+        });
+    });
+}
 const getProfiles = ()  => {
     return new Promise ((resolve, reject) => {
         loginPromise.then(() => {
@@ -240,6 +270,8 @@ const init = () => {
             logout: logout,
             signup: signup,
             password: password,
+            getUser: getUser,
+            putUser: putUser,
             getProfiles: getProfiles,
             updateProfile: updateProfile,
             deleteProfile: deleteProfile,
@@ -257,7 +289,9 @@ const init = () => {
              ( env.password ) ) {
             login(env.user, env.password).then(() => {
                 console.log('logged in', env.user);
-            });
+            }).catch((e) => {
+                console.log('login fail', e);
+            })
         }
     });
 }

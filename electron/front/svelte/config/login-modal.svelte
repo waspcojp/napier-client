@@ -30,8 +30,8 @@ const dispatch = createEventDispatcher();
 
 export let alert;
 export let alert_level;
+export let user_name;
 
-let user_name;
 let password;
 
 const close_ = (event) => {
@@ -40,6 +40,7 @@ const close_ = (event) => {
 };
 
 const Login = () => {
+    console.log('user_name', user_name);
     try {
         api.login(user_name, password).then(() => {
             alert = 'login OK';
@@ -49,6 +50,7 @@ const Login = () => {
                 password: password
             }).then(() => {
                 dispatch('login');
+                console.log('loginModal', user_name);
             });
         }).catch((msg) => {
             alert = msg;

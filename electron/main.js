@@ -48,6 +48,8 @@ app.whenReady().then(() => {
     ipcMain.handle('user:logout', api.logout);
     ipcMain.handle('user:signup', api.signup);
     ipcMain.handle('user:password', api.password);
+    ipcMain.handle('user:get', api.getUser);
+    ipcMain.handle('user:put', api.putUser)
     ipcMain.handle('env:set', api.setConf);
     ipcMain.handle('env:get', api.getConf);
     ipcMain.handle('profiles', api.getProfiles);

@@ -103,6 +103,31 @@ const password = (ev, args) => {
     });
 }
 
+const getUser = (ev, args) => {
+    console.log('api.js getUser');
+    return new Promise ((resolve, reject) => {
+        axios.get(`${env.host}/manage/api/user`).then((ret) => {
+            console.log('ret.data', ret.data);
+            if  ( ret.data.user_name ) {
+                resolve(ret.data);
+            } else {
+                reject();
+            }
+        });
+    });
+}
+
+const putUser = (ev, args) => {
+    let user = args;
+    return new Promise((resolve, reject) => {
+        axios.put(`${env.host}/manage/api/user`, user).then((ret) => {
+            console.log('ret.data', ret.data);
+            resolve(ret.data);
+        });
+    });
+}
+
+
 const getProfiles = (ev, args)  => {
     //console.log('api.js getProfiles');
     return new Promise ((resolve, reject) => {
@@ -283,6 +308,8 @@ module.exports = {
     signup: signup,
     getConf: getConf,
     setConf: setConf,
+    getUser: getUser,
+    putUser: putUser,
     getProfiles: getProfiles,
     updateProfile: updateProfile,
     deleteProfile: deleteProfile,

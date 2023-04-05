@@ -15,7 +15,8 @@
 </div>
 <Alert bind:alert={alert} {alert_level}></Alert>
 <Login
-    on:login
+    on:login={login}
+    bind:user_name={_user_name}
     bind:alert={alert}
     bind:alert_level={alert_level}></Login>
 
@@ -28,15 +29,24 @@ import Server from './server.svelte';
 import Login from './login-modal.svelte';
 import Alert from '../components/alert.svelte';
 
+const dispatch = createEventDispatcher();
+
 export let user_name;
 
 let alert;
 let alert_level;
+let _user_name;
 
 afterUpdate(() => {
     if  ( !window.loginModal )  {
         window.loginModal = new Modal(document.getElementById('login-modal'));
     }
 })
+
+const   login = () => {
+    user_name = _user_name;
+    dispatch('login');
+    console.log('login', user_name, ':', _user_name);
+}
 
 </script>
