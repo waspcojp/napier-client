@@ -52,18 +52,7 @@ module.exports = {
             {
 				test: /\.svg(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 use: [
-                  {loader: 'file-loader'},
-                  {
-                    loader: 'svgo-loader',
-                    /*options: {
-                      plugins: [
-                        {removeXMLNS: true},
-                        {removeOffCanvasPaths: true},
-                        {removeDimensions: true},
-                        {reusePaths: true}
-                      ]
-                    }*/
-                  }
+                  {loader: 'file-loader'}
 				]
 			},
 			{

@@ -11,8 +11,9 @@ const login = (user_name, password) => {
             //console.log('res', res);
             if  ( res.result == 'OK' ) {
                 env.user = user_name;
+                env.serverSpecs = res.specs;
+                //console.log('env(preload.js)', env);
                 resolve();
-                //console.log('env', env);
             } else {
                 env.user = undefined;
                 reject(res.message);
@@ -36,11 +37,12 @@ const logout = () => {
         });
     });
 }
-const signup = (user_name, password) => {
+const signup = (user_name, password, mail) => {
     return new Promise ((resolve, reject) => {
         ipcRenderer.invoke('user:signup', {
             user_name: user_name,
-            password: password
+            password: password,
+            mail: mail
         }).then((res) => {
             //console.log('res(preload.js)', res);
             if  ( res.result == 'OK' )  {
@@ -184,7 +186,9 @@ const setConf = (conf) => {
 };
 const getConf = () => {
     return new Promise((resolve, reject) => {
+        console.log('getConf(before call)');
         ipcRenderer.invoke('env:get').then((res) => {
+            console.log('getConf(preload.js', res);
             env = res;
             resolve(res);
         })
@@ -264,7 +268,6 @@ const init = () => {
     //console.log('env', env);
     getConf().then((_env) => {
         env = _env;
-        contextBridge.exposeInMainWorld('env', env);
         contextBridge.exposeInMainWorld('api', {
             login: login,
             logout: logout,
@@ -285,15 +288,9 @@ const init = () => {
             stopWebServer: stopWebServer,
             checkWebServer: checkWebServer
         });
-        if  (( env.user ) &&
-             ( env.password ) ) {
-            login(env.user, env.password).then(() => {
-                console.log('logged in', env.user);
-            }).catch((e) => {
-                console.log('login fail', e);
-            })
-        }
+        contextBridge.exposeInMainWorld('env', env);
     });
+    //console.log('init');
 }
 
 init();

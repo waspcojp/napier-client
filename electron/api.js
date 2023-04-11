@@ -18,7 +18,7 @@ let profiles;
 const init = () => {
     let store = new Store({ name: ENV_FILE_NAME });
     env = store.get('env',  {
-        host: 'www.napier-net.com',
+        host: 'https://www.napier-net.com',
         port: 8001,
         localPort: 4000,
         profiles: {},
@@ -37,6 +37,9 @@ const login = (ev, args) => {
             password: password
         }).then((res) => {
             //console.log('login', res.headers);
+            //console.log('login', res.data);
+            env.serverSpecs = res.data.specs;
+            //console.log({env});
             resolve(res.data);
         }).catch((e) => {
             reject({
@@ -61,10 +64,12 @@ const logout = (ev, args) => {
 const signup = (ev, args) => {
 	let user_name = args.user_name;
 	let password = args.password;
+    let mail = args.mail;
     return new Promise ((resolve, reject) => {
         axios.post(`${env.host}/manage/api/signup`, {
             user_name: user_name,
-            password: password
+            password: password,
+            mail: mail
         }).then((res) => {
             resolve(res.data);
         }).catch((e) => {
@@ -104,10 +109,10 @@ const password = (ev, args) => {
 }
 
 const getUser = (ev, args) => {
-    console.log('api.js getUser');
+    //console.log('api.js getUser');
     return new Promise ((resolve, reject) => {
         axios.get(`${env.host}/manage/api/user`).then((ret) => {
-            console.log('ret.data', ret.data);
+            //console.log('ret.data', ret.data);
             if  ( ret.data.user_name ) {
                 resolve(ret.data);
             } else {
@@ -121,7 +126,7 @@ const putUser = (ev, args) => {
     let user = args;
     return new Promise((resolve, reject) => {
         axios.put(`${env.host}/manage/api/user`, user).then((ret) => {
-            console.log('ret.data', ret.data);
+            //console.log('ret.data', ret.data);
             resolve(ret.data);
         });
     });
@@ -203,27 +208,31 @@ const deleteProfile = (ev, args) => {
     });
 }
 
+const copyEnv = () => {
+    let _env = {
+        host: env.host,
+        port: env.port,
+        user: env.user,
+        password: env.password,
+        localPort: env.localPort,
+        profiles: {},
+        webServer: env.webServer
+    }
+    Object.keys(env.profiles).forEach((key) => {
+        _env.profiles[key] = {
+            localPort: env.profiles[key].localPort
+        };
+    });
+    return  (_env);
+}
+
 const setConf = (ev, args) => {
     return new Promise ((resolve, reject) => {
         let store = new Store({ name: ENV_FILE_NAME });
-        //console.log('setConf', args, env);
         if ( args ) {
             env = args;
         }
-        let _env = {
-            host: env.host,
-            port: env.port,
-            user: env.user,
-            password: env.password,
-            localPort: env.localPort,
-            profiles: {},
-            webServer: env.webServer
-        }
-        Object.keys(env.profiles).forEach((key) => {
-            _env.profiles[key] = {
-                localPort: env.profiles[key].localPort
-            };
-        });
+        let _env = copyEnv();
 
         //console.log('_env', env);
         //console.log(JSON.stringify(_env, null, ' '));
@@ -233,8 +242,12 @@ const setConf = (ev, args) => {
 }
 const getConf = (ev, args) => {
     return new Promise ((resolve, reject) => {
-        //console.log('getConf');
-        resolve(env);
+        console.log('getConf(api.js)', env);
+        let _env = copyEnv();
+        resolve(_env);
+    }).catch((e) => {
+        console.log('getConf', e);
+        reject()
     });
 }
 
@@ -271,6 +284,7 @@ const checkProxy = (ev, args) => {
 
 const startWebServer = (ev, args) => {
     let conf = env.webServer;
+    console.log('startWebServer(api.js)', conf);
 
     return new Promise((resolve, reject) => {
         webServer.start(conf.port, conf.public, conf);

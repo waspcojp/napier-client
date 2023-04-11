@@ -632,6 +632,8 @@ const handler = async (request, response, config = {}, methods = {}) => {
 	const current = config.public ? path.resolve(cwd, config.public) : cwd;
 	const handlers = getHandlers(methods);
 
+//console.log('url', request.url);
+
 	let relativePath = null;
 	let acceptsJSON = null;
 
@@ -649,6 +651,7 @@ const handler = async (request, response, config = {}, methods = {}) => {
 		});
 	}
 	let absolutePath = path.join(current, relativePath);
+//console.log('absolutePath', absolutePath);
 
 	// Prevent path traversal vulnerabilities. We could do this
 	// by ourselves, but using the package covers all the edge cases.
@@ -785,7 +788,7 @@ const handler = async (request, response, config = {}, methods = {}) => {
 	//	read contents here!!
 	const headers = await getHeaders(handlers, config, current, absolutePath, stats);
 
-	if	( absolutePath.match(/\.md/g) )	{
+	if	( ( config.markdown ) && ( absolutePath.match(/\.md/g) ) )	{
 		let content = await renderMarkdown(absolutePath);
 		if	( content )	{
 			response.statusCode = 200;
