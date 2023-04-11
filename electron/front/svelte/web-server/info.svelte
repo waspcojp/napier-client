@@ -1,25 +1,47 @@
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">ウェブサーバ設定</h3>
-    </div>
+        ウェブサーバ設定
+   </div>
     <div class="card-body">
         <div class="form-check">
             <input class="form-check-input" type="checkbox"
+                disabled={run}
                 bind:checked={conf.directoryListing} value=true id="directoryListing">
-            <label class="form-check-label" for="directroyListing">
-                Disable directory listing or restrict it to certain paths
+            <label class="form-check-label" for="directroyListing"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="ファイル交換等に使う時はチェックすると楽ですが、ファイルの存在が見えてしまうので注意しましょう">
+                インデクスファイルがない場合に自動的に生成して送信する
             </label>
         </div>
         <div class="form-check">
             <input class="form-check-input" type="checkbox"
+                disabled={run}
                 bind:checked={conf.symlinks} value=true id="symlinks">
-            <label class="form-check-label" for="symlinks">
-                Resolve symlinks instead of rendering a 404 error
+            <label class="form-check-label" for="symlinks"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="有効にすると思いがけないファイルを送信してしまうかも知れません">
+                シンボリックリンクを追跡して送信する
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox"
+                disabled={run}
+                bind:checked={conf.markdown} value=true id="markdown">
+            <label class="form-check-label" for="markdown"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="便利ですが、有効にすると生のマークダウンファイルを送信しなくなります">
+                マークダウン形式をサーバでレンダリングする
             </label>
         </div>
         <div class="row">
-            <label for="root" class="col-sm-4 col-form-label">
-                document root
+            <label for="root" class="col-sm-4 col-form-label"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="ウェブで公開するコンテンツのあるフォルダを指定します">
+                コンテンツのあるフォルダの場所
             </label>
             <div class="col-sm-8">
                 <input type="text" class="form-control"
@@ -29,8 +51,11 @@
             </div>
         </div>
         <div class="row">
-            <label for="root" class="col-sm-4 col-form-label">
-                web port
+            <label for="root" class="col-sm-4 col-form-label"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="このポート番号はプロキシの起動の時に参照できます。">
+                ウェブサーバで使うポートの番号
             </label>
             <div class="col-sm-2">
                 <input type="text" class="form-control number"
@@ -40,12 +65,14 @@
         </div>
     </div>
     <div class="card-footer">
+        <button type="button" class="btn btn-primary"
+            on:click={update}>設定更新</button>
         {#if (run) }
         <button type="button" class="btn btn-danger"
-            on:click={start}>Stop</button>
+            on:click={start}>停止</button>
         {:else}
         <button type="button" class="btn btn-primary"
-            on:click={start}>Start</button>
+            on:click={start}>始動</button>
         {/if}
     </div>
 </div>
@@ -53,32 +80,43 @@
 <script>
 import {onMount, beforeUpdate, afterUpdate, createEventDispatcher} from 'svelte';
 
-let conf = {};
+let conf;
 let run;
 
-onMount(()=> {
-    console.log('web-server:onMount');
-    if  ( env.webServer )   {
-        conf = {
-            public: env.webServer.public,
-            port: env.webServer.port,
-            directoryListing: env.webServer.directoryListing,
-            symlinks: env.webServer.symlinks
-        };
-    } else {
+beforeUpdate(() => {
+    if  ( !conf )   {
         conf = {};
     }
+});
+onMount(()=> {
+    console.log('web-server:onMount');
+    conf = {};
+    api.getConf().then((_env) => {
+        console.log('got');
+        if  ( _env.webServer )   {
+            conf = {
+                public: _env.webServer.public,
+                port: _env.webServer.port,
+                directoryListing: _env.webServer.directoryListing,
+                symlinks: _env.webServer.symlinks,
+                markdown: _env.webServer.markdown
+            };
+        }
+    }).catch((e) => {
+        console.log('error', e);
+    });
 
     api.checkWebServer().then((ret) => {
         run = ret;
     })
 });
-beforeUpdate(() => {
-    console.log('web-server:beforeUpdate');
-})
-afterUpdate(() => {
-    console.log('web-server:afterUpdate');
-})
+
+const update = () => {
+    console.log('update', conf);
+    api.setConf({
+        webServer: conf
+    });
+}
 
 const start = () => {
     if  ( !run )    {
@@ -86,7 +124,6 @@ const start = () => {
         api.setConf({
             webServer: conf
         }).then(() => {
-            console.log('env', env);
             api.startWebServer().then(() => {
                 run = true;
             });

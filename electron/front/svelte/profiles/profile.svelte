@@ -1,6 +1,9 @@
 <div class="card">
-    <div class="card-header" on:click={click}>
-        <h3 class="card-title">{profile.name}</h3>
+    <div class="card-header">
+            <a href="#" class="nav-link"
+                on:click|preventDefault={click}>
+                {profile.name}
+            </a>
     </div>
     <ProfileCard {profile}></ProfileCard>
     <div class="card-footer">
@@ -9,21 +12,38 @@
                 <input type="checkbox" class="form-check-input"
                     bind:checked={web} value=true
                     on:change={change}>
-                <label class="form-check-label" for="start">
+                <label class="form-check-label" for="start"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="ウェブサーバに指定したポート番号を使用します">
                     web
                 </label>
             </div>
             <div class="col-4">
                 <input type="text" class="form-control number"
-                    disabled={web}
+                    disabled={run}
                     bind:value={profile.localPort} >
             </div>
             {#if (run) }
             <button type="button" class="btn btn-danger col-4"
-                on:click={start}>Stop</button>
+                on:click={start}
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="プロキシを停止します(ウェブサーバは連動しません)">
+                停止</button>
+            {:else if ( specs && !specs.newProfile ) && ( profile.name !== 'default' )}
+            <button type="button" class="btn btn-primary col-4" disabled
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="プロキシを起動します">
+                開始</button>
             {:else}
             <button type="button" class="btn btn-primary col-4"
-                on:click={start}>Start</button>
+                on:click={start}
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="プロキシを起動します">
+                開始</button>
             {/if}
         </div>
     </div>
@@ -31,6 +51,7 @@
 
 <script>
 export  let profile;
+export  let specs;
 
 import {onMount, beforeUpdate, afterUpdate, createEventDispatcher} from 'svelte';
 const dispatch = createEventDispatcher();
@@ -39,7 +60,7 @@ let web;
 let run;
 
 onMount(()=> {
-    console.log('profile:onMount');
+    //console.log('profile:onMount');
     if  ( env.webServer )   {
         web = ( profile.localPort == env.webServer.port ) ? true : false;
     } else {
@@ -52,7 +73,7 @@ onMount(()=> {
 });
 
 const change = () => {
-    console.log('web', web);
+    //console.log('web', web);
     if  ( web ) {
         profile.localPort = env.webServer.port;
     }

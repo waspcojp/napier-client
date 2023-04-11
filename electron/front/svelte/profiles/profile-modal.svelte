@@ -6,47 +6,89 @@
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="modalLabel">Proxy Profile</h5>
+				<h5 class="modal-title" id="modalLabel">
+                    プロキシープロファイル
+                </h5>
 				<button type="button" class="btn-close" id="close-button" area-label="Close"
 					on:click={close_}></button>
 			</div>
 			<div class="modal-body">
                 <div class="row fill-height">
                     <div class="row mb-3">
-                        <label for="name" class="col-sm-2 col-form-label">Name</label>
+                        <label for="name" class="col-sm-2 col-form-label">プロファイル名</label>
                         <div class="col-sm-10">
+                            {#if ( profile.name === 'default' ) }
+                            <input type="text" class="form-control"
+                                disabled
+                                bind:value={profile.name}>
+                            {:else}
                             <input type="text" class="form-control" bind:value={profile.name}>
+                            {/if}
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="path" class="col-sm-2 col-form-label">Path</label>
+                        <label for="path" class="col-sm-2 col-form-label"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="プロトコルの指定は不要です">プロキシパス</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" bind:value={profile.path}>
+                            {#if ( specs && !specs.newProfile ) && ( profile.name !== 'default' )}
+                            <input type="text" class="form-control"
+                                bind:value={profile.path}>
+                            {:else}
+                            <input type="text" class="form-control" disabled
+                                bind:value={profile.path}>
+                            {/if}
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="ssl" class="col-sm-2 col-form-label">SSL</label>
+                        <label for="ssl" class="col-sm-2 col-form-label"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="httpで接続された時にも強制的にhttpsでの接続にします">
+                            強制HTTPS
+                        </label>
                         <div class="col-sm-10">
                             <input type="checkbox" class="form-checkbox-input" bind:checked={profile.ssl} id="ssl">
                             <label class="form-checkbox-label" for="ssl">
-                                Use SSL
+                                強制的にHTTPSを使う
                             </label>
                         </div>
                     </div>
+                    <hr/>
                     <div class="row mb-3">
-                        <label for="key" class="col-sm-2 col-form-label">Private key</label>
+                        <p>
+                            以下はセキュリティのため表示上はテキスト形式になっていますが、指定する場合はエンコードされた形式で入力します。
+                        </p>
+                        {#if ( specs && specs.useWildcardCert && profile.name === 'default' )}
+                        <p>
+                            このサーバのデフォルトプロファイルでは、特別な場合を除いて指定する必要はありません。
+                        </p>
+                        {/if}
+                    </div>
+                    <div class="row mb-3">
+                        <label for="key" class="col-sm-2 col-form-label">
+                            秘密鍵(key)
+                        </label>
                         <div class="col-sm-10">
                             <textarea class="form-control monospace" bind:value={profile.key} rows="5"></textarea>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="key" class="col-sm-2 col-form-label">Certificate</label>
+                        <label for="key" class="col-sm-2 col-form-label">
+                            証明書(cert)
+                        </label>
                         <div class="col-sm-10">
                             <textarea class="form-control monospace" bind:value={profile.cert} rows="5"></textarea>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="key" class="col-sm-2 col-form-label">Certificate</label>
+                        <label for="key" class="col-sm-2 col-form-label"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="認証局の証明書が必要な場合に指定します。通常は不要です">
+                            認証局証明書
+                        </label>
                         <div class="col-sm-10">
                             <textarea class="form-control monospace" bind:value={profile.ca} rows="5"></textarea>
                         </div>
@@ -56,10 +98,10 @@
 			<div class="modal-footer">
 				{#if ( profile && profile.id ) }
 					<button type="button" class="btn btn-danger" id="delete-button"
-						on:click={delete_}>Delete</button>
+						on:click={delete_}>削除</button>
 				{/if}
 				<button type="button" class="btn btn-primary" id="save-button"
-						on:click={save}>Save</button>
+						on:click={save}>保存</button>
 			</div>
 		</div>
 	</div>
@@ -71,6 +113,7 @@ const dispatch = createEventDispatcher();
 
 export let modal;
 export let profile;
+export let specs;
 
 const clean_popup = () => {
 	dispatch('close');
@@ -78,10 +121,10 @@ const clean_popup = () => {
 }
 
 beforeUpdate(() => {
-	console.log('beforeUpdate profile-modal', profile);
+	//console.log('beforeUpdate profile-modal', profile);
 });
 afterUpdate(() => {
-	console.log('afterUpdate profile-modal');
+	//console.log('afterUpdate profile-modal');
 });
 
 const save = (event) => {
@@ -105,7 +148,7 @@ const save = (event) => {
 };
 
 const close_ = (event) => {
-    console.log('close');
+    //console.log('close');
 	clean_popup();
 };
 

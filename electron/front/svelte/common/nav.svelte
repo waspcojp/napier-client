@@ -1,14 +1,14 @@
-<nav class="main-header navbar navbar-expand-lg navbar-light bg-light p-3">
+<nav class="main-header navbar navbar-expand-lg navbar-light bg-light">
 	<div class="container-fluid">
 		<ul class="navbar-nav">
 			<li class="nav-item">
-				<a href="home" class="nav-link">Home</a>
 			</li>
 		</ul>
 		<span class="havbar-text">
 		</span>
 		<ul class="navbar-nav ms-auto">
 			<li class="nav-item dropdown">
+				{#if ( user_name) }
 				<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" id="user_menu"
 						role="button" aria-expanded="false">
 					<span class="d-none d-md-inline">{user_name}</span>
@@ -21,11 +21,9 @@
 						</a>
 					</li>
 				</ul>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" data-lte-toggle="sidebar-full" role="button">
-					<i class="fas fa-expand-arrows-alt"></i>
-				</a>
+				{:else}
+				&nbsp;
+				{/if}
 			</li>
 		</ul>
 	</div>

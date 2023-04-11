@@ -17,6 +17,7 @@
 <Login
     on:login={login}
     bind:user_name={_user_name}
+    bind:specs={specs}
     bind:alert={alert}
     bind:alert_level={alert_level}></Login>
 
@@ -32,6 +33,7 @@ import Alert from '../components/alert.svelte';
 const dispatch = createEventDispatcher();
 
 export let user_name;
+export let specs;
 
 let alert;
 let alert_level;

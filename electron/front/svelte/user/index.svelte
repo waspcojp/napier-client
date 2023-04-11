@@ -1,17 +1,24 @@
 <Alert bind:alert={alert} {alert_level}></Alert>
 <div class="row">
     <div class="col-6" style="padding:10px;">
-        <UserInfo
+        <Password
             bind:currentPassword
             bind:newPassword
             bind:confirmPassword
             bind:mail
-            updatePassword={updatePassword}
-            updateUser={updateUser}></UserInfo>
+            update={updatePassword}></Password>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6" style="padding:10px;">
+        <UserInfo
+            bind:mail
+            update={updatePassword}></UserInfo>
     </div>
 </div>
 
 <script>
+import Password from './password.svelte';
 import UserInfo from './info.svelte';
 import Alert from '../components/alert.svelte';
 import {onMount} from 'svelte';

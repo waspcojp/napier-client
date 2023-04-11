@@ -1,40 +1,56 @@
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Server configuration</h3>
+        <h3 class="card-title">
+            サーバ接続設定
+        </h3>
     </div>
     <div class="card-body login-card-body">
         <div class="row full-height">
-            <div class="row mb-3">
-                <label for="server_name" class="col-sm-4 col-form-label">server API address</label>
-                <div class="input-group mb-8">
-                    <input type="text" class="form-control" placeholder="Server API address"
-                        id="server_name"
-                        bind:value={host}>
-                </div>
-            </div>
-            <div class="input-group mb-3">
-                <label for="port" class="col-sm-4 col-form-label">server websocket port</label>
-                <div class="input-group mb-8">
-                    <input type="text"class="form-control" placeholder="websocket port"
-                        id="port"
-                        bind:value={port}>
-                </div>
+            <label for="server_name" class="col-form-label">
+                サーバのURL
+            </label>
+        </div>
+        <div class="row full-height">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Server API address"
+                    id="server_name"
+                    bind:value={host}>
             </div>
         </div>
-        <button type="button" class="btn btn-primary"
-            on:click={Update}>
-            Update
-        </button>
-        {#if ( !user_name || ( user_name == '' )) }
-        <button type="button" class="btn btn-primary"
-            on:click={Connect}>
-            Connect
-        </button>
-        {:else}
-        <a on:click|preventDefault={Logout} href="#" class="btn btn-secondary">
-            Disconnect
-        </a>
-        {/if}
+        <div class="row full-height">
+            <label for="port" class="col-form-label">
+                サーバのweb socketのポート番号
+            </label>
+        </div>
+        <div class="row full-height">
+            <div class="input-group">
+                <input type="text"class="form-control" placeholder="websocket port"
+                    id="port"
+                    bind:value={port}>
+            </div>
+        </div>
+        <div style="margin-top:10px;">
+            <button type="button" class="btn btn-primary"
+                on:click={Update}>
+                更新
+            </button>
+            {#if ( !user_name || ( user_name == '' )) }
+            <button type="button" class="btn btn-primary"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="サーバに接続します"
+                on:click={Connect}>
+                接続
+            </button>
+            {:else}
+            <a on:click|preventDefault={Logout} href="#" class="btn btn-secondary"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="サーバから切断します">
+                切断
+            </a>
+            {/if}
+        </div>
     </div>
 </div>
 <script>

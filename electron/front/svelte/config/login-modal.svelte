@@ -31,6 +31,7 @@ const dispatch = createEventDispatcher();
 export let alert;
 export let alert_level;
 export let user_name;
+export let specs;
 
 let password;
 
@@ -49,8 +50,11 @@ const Login = () => {
                 user: user_name,
                 password: password
             }).then(() => {
-                dispatch('login');
-                console.log('loginModal', user_name);
+                api.getConf().then((_env) => {
+                    dispatch('login');
+                    specs = _env.serverSpecs;
+                    console.log('loginModal', user_name);
+                });
             });
         }).catch((msg) => {
             alert = msg;

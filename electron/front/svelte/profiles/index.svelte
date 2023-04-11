@@ -1,14 +1,19 @@
 <Alert bind:alert={alert} {alert_level}></Alert>
-<div class="row justify-content-end">
-    <div class="col-1" style="padding:10px;">
+<h1 class="display-6">プロファイル一覧</h1>
+{#if ( specs && specs.newProfile )}
+<div class="row">
+    <div class="col-auto me-auto"></div>
+    <div class="col-auto">
         <button type="button" class="btn btn-primary"
-            on:click={newProfile}>New</button>
+            on:click={newProfile}>新規作成</button>
     </div>
 </div>
+{/if}
 <div class="row">
 {#each profiles as profile}
     <div class="col-4" style="padding:10px;">
         <Profile
+            {specs}
             bind:profile={profile}
             on:open={openProfile}
         ></Profile>
@@ -18,6 +23,7 @@
 <ProfileModal
     {modal}
     {profile}
+    {specs}
     on:close={close_}></ProfileModal>
 
 <script>
@@ -29,6 +35,8 @@ import Alert from '../components/alert.svelte';
 
 let alert;
 let alert_level;
+
+export let specs;
 
 let profiles = [];
 let modal;
