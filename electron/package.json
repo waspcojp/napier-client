@@ -28,6 +28,7 @@
       "./client/directory.svelte",
       "./libs/message.js",
       "./public/logo.png",
+      "./public/napier-white.svg",
       "./public/circle4686.png",
       "./public/bootstrap-icons/font/bootstrap-icons.css",
       "./public/stylesheets/style.css",
