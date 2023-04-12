@@ -17,13 +17,9 @@
                     <div class="row mb-3">
                         <label for="name" class="col-sm-2 col-form-label">プロファイル名</label>
                         <div class="col-sm-10">
-                            {#if ( profile.name === 'default' ) }
                             <input type="text" class="form-control"
-                                disabled
+                                disabled={ profile.name === 'default' }
                                 bind:value={profile.name}>
-                            {:else}
-                            <input type="text" class="form-control" bind:value={profile.name}>
-                            {/if}
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -32,13 +28,9 @@
                             data-bs-placement="top"
                             title="プロトコルの指定は不要です">プロキシパス</label>
                         <div class="col-sm-10">
-                            {#if ( specs && !specs.newProfile ) && ( profile.name !== 'default' )}
                             <input type="text" class="form-control"
+                                disabled={ !specs || !specs.newProfile || ( profile.name === 'default')}
                                 bind:value={profile.path}>
-                            {:else}
-                            <input type="text" class="form-control" disabled
-                                bind:value={profile.path}>
-                            {/if}
                         </div>
                     </div>
                     <div class="row mb-3">

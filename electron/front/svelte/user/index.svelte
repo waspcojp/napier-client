@@ -13,7 +13,7 @@
     <div class="col-6" style="padding:10px;">
         <UserInfo
             bind:mail
-            update={updatePassword}></UserInfo>
+            update={updateUser}></UserInfo>
     </div>
 </div>
 
@@ -31,7 +31,6 @@ let alert;
 let alert_level;
 
 onMount(() => {
-    console.log('user:onMount');
     api.getUser().then((user) => {
         console.log({user});
         mail = user.mail;

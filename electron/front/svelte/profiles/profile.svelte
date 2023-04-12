@@ -50,12 +50,13 @@
 </div>
 
 <script>
-export  let profile;
-export  let specs;
-
 import {onMount, beforeUpdate, afterUpdate, createEventDispatcher} from 'svelte';
 const dispatch = createEventDispatcher();
 import ProfileCard from './profile-card.svelte';
+
+export  let profile;
+export  let specs;
+
 let web;
 let run;
 

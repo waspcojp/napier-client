@@ -80,6 +80,7 @@ afterUpdate(() => {
 })
 
 onMount(() => {
+    console.log({specs});
     updateProfiles();
 })
 </script>

@@ -216,7 +216,8 @@ const copyEnv = () => {
         password: env.password,
         localPort: env.localPort,
         profiles: {},
-        webServer: env.webServer
+        webServer: env.webServer,
+        serverSpecs: env.serverSpecs
     }
     Object.keys(env.profiles).forEach((key) => {
         _env.profiles[key] = {
