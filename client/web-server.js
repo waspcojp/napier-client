@@ -499,12 +499,6 @@ const mdInit = (_path) => {
 			linkify:      true,         // autoconvert URL-like texts to links
 			typographer:  true,         // Enable smartypants and other sweet transforms
 		})
-		.use((ReplaceLink), {
-			replaceLink: (link, env) => {
-				console.log(link);
-				return	`${dir}/${link}`;
-			}
-		})
 		.use((Emoji))
 		.use((Prism), {
 			plugins: [
