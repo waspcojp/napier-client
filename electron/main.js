@@ -15,6 +15,8 @@ const createWindow = () => {
         minHeight: HEIGHT,
         //maxWidth: WIDTH,
         //maxHeight: HEIGHT,
+        resizable: true,
+        useContentSize: true,
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
         },
