@@ -8,6 +8,7 @@
                 <input type="text" class="form-control" value={profile.path} readonly=true>
             </div>
         </div>
+        {#if ( specs && specs.useSSL )}
         <div class="row mb-3">
             <label for="ssl" class="col-sm-4 col-form-label">
                 強制SSL
@@ -16,8 +17,10 @@
                 <input type="text" class="form-control" value={profile.ssl ? "YES" : "NO"} readonly=true>
             </div>
         </div>
+        {/if}
     </div>
 </div>
 <script>
 export  let profile;
+export  let specs;
 </script>    

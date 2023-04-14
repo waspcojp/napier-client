@@ -66,7 +66,9 @@
     </div>
     <div class="card-footer">
         <button type="button" class="btn btn-primary"
-            on:click={update}>設定更新</button>
+            on:click={update}
+            disabled={run}
+            >設定更新</button>
         {#if (run) }
         <button type="button" class="btn btn-danger"
             on:click={start}>停止</button>
@@ -89,10 +91,9 @@ beforeUpdate(() => {
     }
 });
 onMount(()=> {
-    console.log('web-server:onMount');
+    //console.log('web-server:onMount');
     conf = {};
     api.getConf().then((_env) => {
-        console.log('got');
         if  ( _env.webServer )   {
             conf = {
                 public: _env.webServer.public,
@@ -112,7 +113,7 @@ onMount(()=> {
 });
 
 const update = () => {
-    console.log('update', conf);
+    //console.log('update', conf);
     api.setConf({
         webServer: conf
     });
@@ -120,7 +121,6 @@ const update = () => {
 
 const start = () => {
     if  ( !run )    {
-        console.log('conf', conf);
         api.setConf({
             webServer: conf
         }).then(() => {
@@ -138,7 +138,6 @@ const start = () => {
 
 const openDialog = async () => {
     let path = await api.openDialog();
-    console.log('path', path);
     if  ( path ) {
         conf.public = path;
     }

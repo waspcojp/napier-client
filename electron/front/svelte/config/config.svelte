@@ -1,6 +1,7 @@
 <div class="row">
     <div class="col-6" style="padding:10px;">
         <Server
+            {modal}
             bind:user_name={user_name}
             bind:alert={alert}
             bind:alert_level={alert_level}>
@@ -16,6 +17,7 @@
 <Alert bind:alert={alert} {alert_level}></Alert>
 <Login
     on:login={login}
+    {modal}
     bind:user_name={_user_name}
     bind:specs={specs}
     bind:alert={alert}
@@ -38,10 +40,11 @@ export let specs;
 let alert;
 let alert_level;
 let _user_name;
+let modal;
 
 afterUpdate(() => {
-    if  ( !window.loginModal )  {
-        window.loginModal = new Modal(document.getElementById('login-modal'));
+    if  ( !modal )  {
+        modal = new Modal(document.getElementById('login-modal'));
     }
 })
 

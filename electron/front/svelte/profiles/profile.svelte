@@ -5,7 +5,9 @@
                 {profile.name}
             </a>
     </div>
-    <ProfileCard {profile}></ProfileCard>
+    <ProfileCard
+        {specs}
+        {profile}></ProfileCard>
     <div class="card-footer">
         <div class="row">
             <div class="form-check col-sm-4" id="check" style="padding-top:7px;">
@@ -59,31 +61,41 @@ export  let specs;
 
 let web;
 let run;
+let env;
+
+const change = () => {
+    //console.log('profile change', profile, env.webServer);
+    if  ( env.webServer )   {
+        if  ( web ) {
+            profile.localPort = env.webServer.port;
+        }
+        profile.startWeb = web;
+        api.updateProfile(profile);
+    }
+}
 
 onMount(()=> {
     //console.log('profile:onMount');
-    if  ( env.webServer )   {
-        web = ( profile.localPort == env.webServer.port ) ? true : false;
-    } else {
-        web = false;
-    }
-    api.checkProxy(profile.name).then((ret) => {
-        //console.log('ret', profile.name, ret);
-        run = ret;
-    })
+    api.getConf().then((_env) => {
+        env = _env;
+        if  ( env.webServer )   {
+            web = profile.startWeb;
+        } else {
+            web = false;
+        }
+        change();
+        api.checkProxy(profile.name).then((ret) => {
+            //console.log('ret', profile.name, ret);
+            run = ret;
+        })
+    });
 });
 
-const change = () => {
-    //console.log('web', web);
-    if  ( web ) {
-        profile.localPort = env.webServer.port;
-    }
-}
 const   click = (event) => {
     dispatch('open', profile);
 }
 const start = (event) => {
-    console.log('start', profile.name);
+    //console.log('start', profile.name);
     if  ( !run )  {
         api.startProxy(profile.name, profile.localPort).then(() => {
             api.setConf().then(() => {

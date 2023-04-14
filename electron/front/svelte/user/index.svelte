@@ -32,7 +32,7 @@ let alert_level;
 
 onMount(() => {
     api.getUser().then((user) => {
-        console.log({user});
+        //console.log({user});
         mail = user.mail;
     });
 })
@@ -40,8 +40,12 @@ const updatePassword = (event) => {
     if  ( newPassword ) {
         if  ( newPassword == confirmPassword )    {
             api.password(currentPassword, newPassword).then((ret) => {
-                alert = 'password update success';
-                alert_level = 'alert-success';
+                api.setConf({
+                    password: newPassword
+                }).then(() => {
+                    alert = 'password update success';
+                    alert_level = 'alert-success';
+                });
             }).catch ((e) => {
                 alert = 'password update fail';
                 alert_level = 'alert-danger';

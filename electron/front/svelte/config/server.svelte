@@ -1,8 +1,6 @@
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">
-            サーバ接続設定
-        </h3>
+        サーバ接続設定
     </div>
     <div class="card-body login-card-body">
         <div class="row full-height">
@@ -59,6 +57,7 @@ import {onMount, beforeUpdate, afterUpdate, createEventDispatcher} from 'svelte'
 export let alert;
 export let alert_level;
 export let user_name;
+export let modal;
 
 let host;
 let port;
@@ -89,7 +88,7 @@ const Connect = () => {
         host: host,
         port: port
     }).then(() => {
-        loginModal.show();
+        modal.show();
     });
 }
 const Logout = () => {

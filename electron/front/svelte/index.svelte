@@ -32,7 +32,7 @@
             </div>
         </div>
     </main>
-    <CommonFooter></CommonFooter>
+    <!-- CommonFooter></CommonFooter -->
 </div>
 
 <script>
@@ -57,10 +57,8 @@ onMount(() => {
     //console.log('index.svelte', env);
     if  (( env.user ) &&
          ( env.password ) ) {
-        console.log('login');
         api.login(env.user, env.password).then(() => {
             api.getConf().then((_env) => {
-                console.log('logged in', _env);
                 specs = _env.serverSpecs;
                 user_name = _env.user;
                 current = 'profile';

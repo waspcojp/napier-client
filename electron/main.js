@@ -4,12 +4,17 @@ const path = require("path");
 const api = require('./api');
 const WIDTH = 1200;
 //const WIDTH = 1600;
+const HEIGHT = 1000;
 
 let mainWindow;
 const createWindow = () => {
     mainWindow = new BrowserWindow({
         width: WIDTH,
-        height: 1000,
+        height: HEIGHT,
+        minWidth: WIDTH,
+        minHeight: HEIGHT,
+        //maxWidth: WIDTH,
+        //maxHeight: HEIGHT,
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
         },

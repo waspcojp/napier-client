@@ -138,7 +138,7 @@ const getProfiles = (ev, args)  => {
     return new Promise ((resolve, reject) => {
         axios.get(`${env.host}/manage/api/profiles`).then((res) => {
             if  ( res.data.result == 'OK' ) {
-                profiles = res.data.profiles;
+                let profiles = res.data.profiles;
                 //console.log('profiles', profiles);
                 for ( profile of profiles ) {
                     if  ( !env.profiles[profile.name] ) {
@@ -147,12 +147,12 @@ const getProfiles = (ev, args)  => {
                         profile.closed = true;
                     } else {
                         profile.localPort = env.profiles[profile.name].localPort;
+                        profile.startWeb = env.profiles[profile.name].startWeb;
                         profile.start = env.profiles[profile.name].start;
                         profile.closed = true;
                     }
                 }
-                //console.log('profiles', env.profiles);
-                resolve(res.data);
+                resolve(profiles);
             } else {
                 reject();
             }
@@ -161,15 +161,19 @@ const getProfiles = (ev, args)  => {
 }
 const updateProfile = (ev, args) => {
     let profile = args.profile;
+    //console.log('updateProfile', profile);
     return new Promise((resolve, reject) => {
         try {
             let pr;
             if  ( profile.localPort )   {
-                env.profiles[profile.name] = {
-                    localPort: profile.localPort
-                };
+                env.profiles[profile.name].localPort = profile.localPort;
                 delete profile.localPort;
             }
+            if  ( profile.startWeb !== undefined )   {
+                env.profiles[profile.name].startWeb = profile.startWeb;
+                delete profile.startWeb;
+            }
+            //console.log('env', env);
 		    if ( profile.id  ) {
 			    pr = axios.put(`${env.host}/manage/api/profile`, profile);
 		    } else {
@@ -182,7 +186,7 @@ const updateProfile = (ev, args) => {
                 reject();
             })
         } catch(e) {
-            console.log(e);
+            console.log('updateProfile', e);
             reject();
         }
     });
@@ -219,9 +223,11 @@ const copyEnv = () => {
         webServer: env.webServer,
         serverSpecs: env.serverSpecs
     }
+    //  deep copy of profile
     Object.keys(env.profiles).forEach((key) => {
         _env.profiles[key] = {
-            localPort: env.profiles[key].localPort
+            localPort: env.profiles[key].localPort,
+            startWeb: env.profiles[key].startWeb
         };
     });
     return  (_env);
@@ -234,16 +240,13 @@ const setConf = (ev, args) => {
             env = args;
         }
         let _env = copyEnv();
-
-        //console.log('_env', env);
-        //console.log(JSON.stringify(_env, null, ' '));
         store.set('env', _env);
         resolve();
     });
 }
 const getConf = (ev, args) => {
     return new Promise ((resolve, reject) => {
-        console.log('getConf(api.js)', env);
+        //console.log('getConf(api.js)', env);
         let _env = copyEnv();
         resolve(_env);
     }).catch((e) => {

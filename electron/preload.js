@@ -78,12 +78,12 @@ const password = (old_pass, new_pass) => {
     });
 }
 const getUser = ()  => {
-    console.log('preload.js getUser');
+    //console.log('preload.js getUser');
     return new Promise ((resolve, reject) => {
         loginPromise.then(() => {
-            console.log('user:get');
+            //console.log('user:get');
             ipcRenderer.invoke('user:get').then((res) => {
-                console.log('getUser', {res});
+                //console.log('getUser', {res});
                 resolve(res);
             }).catch((e) => {
                 reject();
@@ -112,11 +112,10 @@ const getProfiles = ()  => {
         loginPromise.then(() => {
             ipcRenderer.invoke('profiles').then((res) => {
                 //console.log('res', res);
-                if  ( res.result == 'OK' ) {
-                    resolve(res);
-                } else {
-                    reject();
-                }
+                resolve(res);
+            }).catch((e) => {
+                console.log('getProfiles', e);
+                reject();
             });
         });
     });
@@ -186,11 +185,11 @@ const setConf = (conf) => {
 };
 const getConf = () => {
     return new Promise((resolve, reject) => {
-        console.log('getConf(before call)');
+        //console.log('getConf(before call)');
         ipcRenderer.invoke('env:get').then((res) => {
-            console.log('getConf(preload.js', res);
+            //console.log('getConf(preload.js', res);
             env = res;
-            resolve(res);
+            resolve(env);
         })
     })
 }

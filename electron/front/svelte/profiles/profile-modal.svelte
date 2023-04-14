@@ -33,6 +33,7 @@
                                 bind:value={profile.path}>
                         </div>
                     </div>
+                    {#if ( specs && specs.useSSL )}
                     <div class="row mb-3">
                         <label for="ssl" class="col-sm-2 col-form-label"
                             data-bs-toggle="tooltip"
@@ -63,7 +64,7 @@
                             秘密鍵(key)
                         </label>
                         <div class="col-sm-10">
-                            <textarea class="form-control monospace" bind:value={profile.key} rows="5"></textarea>
+                            <textarea class="form-control monospace" bind:value={profile.key} rows="4"></textarea>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -71,7 +72,7 @@
                             証明書(cert)
                         </label>
                         <div class="col-sm-10">
-                            <textarea class="form-control monospace" bind:value={profile.cert} rows="5"></textarea>
+                            <textarea class="form-control monospace" bind:value={profile.cert} rows="4"></textarea>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -82,19 +83,24 @@
                             認証局証明書
                         </label>
                         <div class="col-sm-10">
-                            <textarea class="form-control monospace" bind:value={profile.ca} rows="5"></textarea>
+                            <textarea class="form-control monospace" bind:value={profile.ca} rows="4"></textarea>
                         </div>
                     </div>
+                    {/if}
                 </div>
             </div>
 			<div class="modal-footer">
-				{#if ( profile && profile.id ) }
+				<button type="button" class="btn btn-info" id="close-button"
+						on:click={close_}>取消</button>
+				{#if ( profile && profile.name !== 'default' ) }
 					<button type="button" class="btn btn-danger" id="delete-button"
 						on:click={delete_}>削除</button>
-				{/if}
-				<button type="button" class="btn btn-primary" id="save-button"
+                {/if}
+                {#if ( specs && specs.useSSL )}
+                    <button type="button" class="btn btn-primary" id="save-button"
 						on:click={save}>保存</button>
-			</div>
+                {/if}
+            </div>
 		</div>
 	</div>
 </div>

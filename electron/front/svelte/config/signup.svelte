@@ -1,48 +1,71 @@
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Napier signup</h3>
+        利用者登録
     </div>
     <div class="card-body login-card-body">
-        <div class="row full-height">
-            <div class="row mb-3">
-                <label for="user_name" class="col-sm-4 col-form-label">User Name</label>
-                <div class="input-group mb-8">
+        <form>
+            <div class="row">
+                <label for="user_name" class="col-form-label"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="デフォルトプロファイルに使われますので、URLに使用できる名前にして下さい">
+                    ユーザ名
+                </label>
+            </div>
+            <div class="row">
+                <div class="input-group">
                     <input type="text" class="form-control" placeholder="User name"
                         id="user_name"
                         bind:value={user_name}>
                 </div>
             </div>
-            <div class="input-group mb-3">
-                <label for="password" class="col-sm-4 col-form-label">Password</label>
-                <div class="input-group mb-8">
+            <div class="row">
+                <label for="password" class="col-form-label"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="システムでは特に制限をしていませんが、他人にわかりにくいものにして下さい">
+                    パスワード
+                </label>
+            </div>
+            <div class="row">
+                <div class="input-group">
                     <input type="text"class="form-control" placeholder="Password"
                         id="password"
                         bind:value={password}>
                 </div>
             </div>
-            <div class="row mb-3">
-                <label for="inputConfirmPassword" class="col-sm-4 col-form-label">
-                    Confirm Password
+            <div class="row">
+                <label for="inputConfirmPassword" class="col-form-label"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="確認のために再度パスワードを入れて下さい">
+                    パスワードの再入力
                 </label>
-                <div class="input-group mb-8">
+            </div>
+            <div class="row">
+                <div class="input-group">
                     <input type="text" class="form-control" id="inputConfirmPassword"
                         bind:value={confirmPassword}>
                 </div>
             </div>
-            <div class="row mb-3">
-                <label for="mail" class="col-sm-4 col-form-label">
-                    Mail address
+            <div class="row">
+                <label for="mail" class="col-form-label">
+                    メールアドレス
                 </label>
-                <div class="col-sm-8">
+            </div>
+            <div class="row">
+                <div class="input-group">
                     <input type="text" class="form-control" id="mail"
                         bind:value={mail}>
                 </div>
             </div>
-        </div>
-        <button type="button" class="btn btn-primary"
-            on:click={SignUp}>
-            Sign Up
-        </button>
+            <div style="margin-top:10px;">
+                <button type="button" class="btn btn-primary"
+                    on:click|preventDefault={SignUp}>
+                    登録
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 

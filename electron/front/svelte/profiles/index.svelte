@@ -62,7 +62,7 @@ const   close_ = (event) => {
 const   updateProfiles = () => {
     api.getProfiles().then((body) => {
             //console.log('body', {body});
-            profiles = body.profiles;
+            profiles = body;
         }).catch ((e) => {
             console.log('error', e);
         })
@@ -80,7 +80,6 @@ afterUpdate(() => {
 })
 
 onMount(() => {
-    console.log({specs});
     updateProfiles();
 })
 </script>
