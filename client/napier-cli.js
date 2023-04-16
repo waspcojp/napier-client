@@ -2,6 +2,13 @@ const program = require('commander');   //  https://github.com/tj/commander.js
 const {clientOpen, Api} = require('./index');
 const fs = require('fs');
 const startWebServer = require('./web-server').start;
+const _axios = require('axios');
+const { CookieJar } = require('tough-cookie');
+const { wrapper } = require('axios-cookiejar-support');
+
+const jar = new CookieJar();
+const axios = wrapper(_axios.create({ jar }));
+
 
 const LOCAL_PORT = 4000;
 const HOST = 'localhost';
@@ -20,6 +27,8 @@ const   parseOptions = () => {
     program.option  ('--server-config <config filename>', 'web server config file');
     program.option  ('--document-root <path>',     'web server document root');
     program.option  ('--index',                    'list index');
+    program.option  ('--markdown',                 'markdown SSR');
+
     program.argument('[profileName]',              'profile name', 'default');
     program.parse();
 
@@ -46,16 +55,16 @@ const   parseOptions = () => {
     opts['reConnect'] ||= false;
     opts['webServer'] ||= false;
     opts['index'] ||= false;
-    console.log({opts}, args);
+    //console.log({opts}, args);
 
     return  { opts: opts, profile: args[0]};
 }
 
 let closed = true;
-const   tunnel = (opts, profile) => {
+const   tunnel = (opts, ws_url, profile) => {
     closed = false;
     //console.log('main');
-    let ws = clientOpen(opts.host, opts.port, opts.localPort, opts.secure);
+    let ws = clientOpen(opts.localPort, ws_url);
     ws.on('open', () => {
         ws.Api('auth', {
                 user: opts.user,
@@ -90,6 +99,29 @@ const   tunnel = (opts, profile) => {
     return  (ws);
 }
 
+const makeConnection = (opts, profile) => {
+    let serverSpecs;
+
+    axios.post(`${opts.host}/manage/api/login`, {
+        user_name: opts.user,
+        password:  opts.password
+    }).then((res) => {
+        serverSpecs = res.data.specs;
+        axios.get(`${opts.host}/manage/api/proxy`).then((res) => {
+            //console.log(res.data);
+            if  ( res.data.result === 'OK' )    {
+                tunnel(opts, res.data.url, profile);
+            } else {
+                console.log('ready fail');
+            }
+        }).catch((e) => {
+            console.log(e);
+        })
+    }).catch ((e) => {
+        console.log(e);
+    })
+}
+
 const   main = () => {
     let {opts, profile} = parseOptions();
     if  ( opts.webServer )  {
@@ -99,6 +131,7 @@ const   main = () => {
             opts.documentRoot ||= config['public'];
         } else {
             config['directoryListing'] = opts.index;
+            config['markdown'] = opts.markdown;
         }
         startWebServer(opts.localPort, opts.documentRoot, config);
     }
@@ -106,14 +139,14 @@ const   main = () => {
         setInterval(() => {
             if  ( closed )  {
                 try {
-                    tunnel(opts, profile);
+                    makeConnection(opts, profile);
                 } catch (e) {
                     console.log('error', e);
                 }
             }
         }, 1000);
     } else {
-        tunnel(opts, profile);
+        makeConnection(opts, profile);
     }
 }
 

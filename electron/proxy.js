@@ -2,17 +2,12 @@ const {clientOpen} = require('./client/index.js');
 
 let closed = true;
 
-const   tunnel = (env, profile_name) => {
+const   tunnel = (env, ws_url, profile_name) => {
     let profile = env.profiles[profile_name];
     profile.closed = false;
     let hosts = env.host.split(':');
-    let host = hosts[1].replace(/^\/\//,'');
-    let secure = false;
-    if  ( hosts[0] === 'https' ) {
-        secure = true;
-    }
     //console.log('proxy', host, env.port, profile.localPort);
-    let ws = clientOpen(host, env.port, profile.localPort, secure);
+    let ws = clientOpen(profile.localPort, ws_url);
     profile.ws = ws;
     ws.on('open', () => {
         ws.Api('auth', {
@@ -50,7 +45,7 @@ const   tunnel = (env, profile_name) => {
     return  (ws);
 }
 
-const start = (env, profile_name, localPort) => {
+const start = (env, endpoint, profile_name, localPort) => {
     if  ( !env.profiles[profile_name] )  {
         env.profiles[profile_name] = {
             closed: true
@@ -66,7 +61,7 @@ const start = (env, profile_name, localPort) => {
             console.log('closed');
             try {
                 //console.log('start', profile_name);
-                tunnel(env, profile_name);
+                tunnel(env, endpoint, profile_name);
             } catch (e) {
                 console.log('error', e);
             }

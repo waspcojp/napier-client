@@ -15,18 +15,6 @@
                     bind:value={host}>
             </div>
         </div>
-        <div class="row full-height">
-            <label for="port" class="col-form-label">
-                サーバのweb socketのポート番号
-            </label>
-        </div>
-        <div class="row full-height">
-            <div class="input-group">
-                <input type="text"class="form-control" placeholder="websocket port"
-                    id="port"
-                    bind:value={port}>
-            </div>
-        </div>
         <div style="margin-top:10px;">
             <button type="button" class="btn btn-primary"
                 on:click={Update}>
@@ -60,13 +48,11 @@ export let user_name;
 export let modal;
 
 let host;
-let port;
 
 const Update = () => {
     console.log('host', host);
     api.setConf({
-        host: host,
-        port: port
+        host: host
     }).then(() => {
         api.logout().then(() => {
         });
@@ -74,19 +60,15 @@ const Update = () => {
 }
 
 onMount(() => {
-    //console.log('beforeUpdate server.svelte', host, port);
+    //console.log('beforeUpdate server.svelte', host);
     if  ( !host )   {
         host = env.host;
-    }
-    if  ( !port )   {
-        port = env.port;
     }
 })
 const Connect = () => {
     console.log('Connect');
     api.setConf({
-        host: host,
-        port: port
+        host: host
     }).then(() => {
         modal.show();
     });

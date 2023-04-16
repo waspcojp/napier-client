@@ -158,9 +158,6 @@ const setConf = (conf) => {
             if  ( conf.host )   {
                 env.host = conf.host;
             }
-            if  ( conf.port )   {
-                env.port = conf.port;
-            }
             if  ( conf.user )   {
                 env.user = conf.user;
             }

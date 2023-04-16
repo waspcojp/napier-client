@@ -19,7 +19,6 @@ const init = () => {
     let store = new Store({ name: ENV_FILE_NAME });
     env = store.get('env',  {
         host: 'https://www.napier-net.com',
-        port: 8001,
         localPort: 4000,
         profiles: {},
         webServer: {}
@@ -142,6 +141,7 @@ const getProfiles = (ev, args)  => {
                 //console.log('profiles', profiles);
                 for ( profile of profiles ) {
                     if  ( !env.profiles[profile.name] ) {
+                        env.profiles[profile.name] = {};
                         profile.localPort = env.localPort;
                         profile.start = false;
                         profile.closed = true;
@@ -261,8 +261,17 @@ const startProxy = (ev, args) => {
     //console.log('api.js', profile_name, localPort);
 
     return new Promise((resolve, reject) => {
-        proxy.start(env, profile_name, localPort);
-        resolve(profile);
+        axios.get(`${env.host}/manage/api/proxy`).then((res) => {
+            if  ( res.data.result === 'OK' )    {
+                proxy.start(env, res.data.url, profile_name, localPort);
+                resolve(profile);
+            } else {
+                reject();
+            }
+        }).catch ((e) => {
+            console.log('startProxy', e);
+            reject();
+        });
     });
 }
 
@@ -288,7 +297,7 @@ const checkProxy = (ev, args) => {
 
 const startWebServer = (ev, args) => {
     let conf = env.webServer;
-    console.log('startWebServer(api.js)', conf);
+    //console.log('startWebServer(api.js)', conf);
 
     return new Promise((resolve, reject) => {
         webServer.start(conf.port, conf.public, conf);
