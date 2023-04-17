@@ -3,7 +3,7 @@
 </style>
 
 <div class="modal" id="profile-modal" tabindex="-1" data-bs-backdrop="static">
-	<div class="modal-dialog modal-lg">
+	<div class="modal-dialog modal-xl">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="modalLabel">
@@ -134,6 +134,10 @@ const save = (event) => {
     if  (( !profile.cert ) ||
          ( !profile.cert.match(/^---/) ))    {
         profile.cert = undefined;
+    }
+    if  (( !profile.ca ) ||
+         ( !profile.ca.match(/^---/) ))    {
+        profile.ca = undefined;
     }
     if  ( !profile.ssl )    {
         profile.ssl = false;

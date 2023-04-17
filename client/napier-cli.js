@@ -106,19 +106,23 @@ const makeConnection = (opts, profile) => {
         user_name: opts.user,
         password:  opts.password
     }).then((res) => {
-        serverSpecs = res.data.specs;
-        axios.get(`${opts.host}/manage/api/proxy`).then((res) => {
-            //console.log(res.data);
-            if  ( res.data.result === 'OK' )    {
-                tunnel(opts, res.data.url, profile);
-            } else {
-                console.log('ready fail');
-            }
-        }).catch((e) => {
-            console.log(e);
-        })
+        if  ( res.data.result === 'OK' )    {
+            serverSpecs = res.data.specs;
+            axios.get(`${opts.host}/manage/api/proxy`).then((res) => {
+                //console.log(res.data);
+                if  ( res.data.result === 'OK' )    {
+                    tunnel(opts, res.data.url, profile);
+                } else {
+                    console.log('ready fail');
+                }
+            }).catch((e) => {
+                console.log('proxy network error');
+            })
+        } else {
+            console.log('login fail', res.data.message);
+        }
     }).catch ((e) => {
-        console.log(e);
+        console.log('login connection refused');
     })
 }
 
