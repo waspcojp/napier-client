@@ -1,4 +1,4 @@
-import './front/javascripts/admin-lte/dist/css/adminlte.min.css';
+// import './public/stylesheets/style.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
