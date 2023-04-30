@@ -10,7 +10,8 @@
     "watch": "NODE_OPTIONS=--openssl-legacy-provider webpack -c webpack.config.js --watch",
     "electron": "electron main.js",
     "build:win": "electron-builder --win --x64",
-    "build:linux": "electron-builder --linux --arm64"
+    "build:linux": "electron-builder --linux --arm64",
+    "build:mac": "electron-builder --mac"
   },
   "build": {
     "appId": "com.napier-net.electron",
@@ -109,7 +110,7 @@
     "css-loader": "^6.7.1",
     "electrode-server": "^3.3.0",
     "electron": "^22.0.0",
-    "electron-builder": "^22.10.3",
+    "electron-builder": "^23.6.0",
     "sequelize-cli": "^6.4.1",
     "style-loader": "^3.3.1",
     "webpack": "^5.74.0",
