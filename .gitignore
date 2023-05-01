@@ -70,3 +70,8 @@ typings/
 
 # next.js build output
 .next
+
+.DS_Store
+electron/.DS_Store
+electron/dist/
+electron/release/
