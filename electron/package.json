@@ -11,7 +11,8 @@
     "electron": "electron main.js",
     "build:win": "electron-builder --win --x64",
     "build:linux": "electron-builder --linux --arm64",
-    "build:mac": "electron-builder --mac"
+    "build:macm1": "electron-builder --mac --arm64",
+    "build:macx64": "electron-builder --mac --x64"
   },
   "build": {
     "appId": "com.napier-net.electron",
@@ -45,7 +46,30 @@
       "output": "release"
     },
     "mac": {
-      "target": "dmg"
+      "category": "public.app-category.developer-tools",
+      "target": ["dmg"],
+      "icon": "public/MacOS_Icon.icns"
+    },
+    "dmg": {
+       "background": "public/DMG_Background.tiff",
+       "icon": "public/MacOS_Icon.icns",
+       "iconSize": 75,
+       "window": {
+           "width": 544,
+           "height": 408
+       },
+       "contents": [
+       {
+           "x": 20,
+           "y": 196
+       },
+       {
+            "x": 350,
+            "y": 196,
+            "type": "link",
+            "path": "/Applications"
+        }
+        ]
     },
     "win": {
       "target": "nsis",
