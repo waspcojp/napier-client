@@ -10,7 +10,7 @@
     "watch": "NODE_OPTIONS=--openssl-legacy-provider webpack -c webpack.config.js --watch",
     "electron": "electron main.js",
     "build:win": "electron-builder --win --x64",
-    "build:linux": "electron-builder --linux --arm64",
+    "build:linux": "electron-builder --linux --arm64 --x64",
     "build:macm1": "electron-builder --mac --arm64",
     "build:macx64": "electron-builder --mac --x64"
   },
