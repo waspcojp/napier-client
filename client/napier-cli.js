@@ -68,7 +68,8 @@ const   tunnel = (opts, ws_url, profile) => {
             },
             (body) => {
                 console.log('body', body);
-                if  ( body.status == 'OK')  {
+                if  (( body ) &&
+                     ( body.status == 'OK' ))  {
                     session_id = body.id;
                     ws.Api('start', {
                             name: profile

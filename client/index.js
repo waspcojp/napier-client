@@ -88,15 +88,19 @@ const   clientOpen = (localPort, ws_url) => {
                         break;
                       case  TYPE_CONNECT:
                         //console.log('channel connect', recv.channel);
-                        let localSocket = net.createConnection({
-                            host: 'localhost',
-                            port: localPort
-                        });
-                        localSocket.on('data', (buff) => {
-                            //console.log('buff', buff.toString());
-                            ws.send(encodeChannelPacket(recv.channel, TYPE_DATA, buff));
-                        });
-                        channels[recv.channel] = localSocket;
+                        try {
+                            let localSocket = net.createConnection({
+                                host: 'localhost',
+                                port: localPort
+                            });
+                            localSocket.on('data', (buff) => {
+                                //console.log('buff', buff.toString());
+                                ws.send(encodeChannelPacket(recv.channel, TYPE_DATA, buff));
+                            });
+                            channels[recv.channel] = localSocket;
+                        } catch (e) {
+                            console.log('local connect error', e);
+                        }
                         break;
                     }
                 }

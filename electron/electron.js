@@ -1,4 +1,4 @@
-// import './public/stylesheets/style.css'
+import './front/stylesheets/style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
