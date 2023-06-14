@@ -1,5 +1,4 @@
 # Napier Client
-
 Japanese document is [here](README_jp.md)
 
 Napier is on demand proxy system, using websocket.
@@ -12,18 +11,20 @@ Napier client is a client for connecting to the Napier server.
 
 #### Command-line client
 
-Command line client release file does not exist.
-
-You can create a command line client like this:
+You can install a command line client like this:
 
 ```shell
-$ git clone https://github.com/waspcojp/napier-client.git
-$ npm update
+ npm install -g napier-client
 ```
 
 #### GUI client
-
-The GUI client is released only for Windows (x86_64).
+![Napier Client GUI](https://www.napier-net.com/assets/ss_login_button.jpg)
+The GUI client is released.
+* Windows (x64)
+* Mac(x64)
+* Mac(arm64)
+* Debian(amd64)
+* Debian(arm64)
 
 Download and launch the installer to install.
 
@@ -34,7 +35,7 @@ Download and launch the installer to install.
 To connect the client,
 
 ```shell
-$ npm run cli -- <options>
+$ napier-client <options>
 ```
 
 Run like.
@@ -42,7 +43,7 @@ Run like.
 The boot options are:
 
 ```
-Usage: napier-cli [options] [profileName]
+Usage: napier-client [options] [profileName]
 
 Arguments:
   profileName                        profile name (default: "default")

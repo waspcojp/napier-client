@@ -14,19 +14,21 @@ Napierについての説明は、[Napier](https://github.com/waspcojp/napier)を
 
 #### コマンドラインクライアント
 
-コマンドラインクライアントのリリースファイルは存在しません。
-
-以下のようにすると、コマンドラインのクライアントが作成できます。
+以下のようにすると、コマンドラインのクライアントが利用できるようになります。
 
 ```shell
-$ git clone https://github.com/waspcojp/napier-client.git
-$ npm update
+ npm install -g napier-client
 ```
 
 #### GUIクライアント
 
-GUIクライアントはWindows(x86_64)版のみリリースしています。
-
+![Napier Client GUI](https://www.napier-net.com/assets/ss_login_button.jpg)
+GUIクライアント版は以下の動作環境に対応しています。
+* Windows (x64)
+* Mac(x64)
+* Mac(arm64)
+* Debian(amd64)
+* Debian(arm64)
 インストーラをダウンロードして起動するとインストールされます。
 
 ### 起動
@@ -36,13 +38,13 @@ GUIクライアントはWindows(x86_64)版のみリリースしています。
 クライアントを接続するには、
 
 ```shell
-$ npm run cli -- <options>
+$ napier-client <options>
 ```
 
 のように実行します。起動オプションは、
 
 ```
-Usage: napier-cli [options] [profileName]
+Usage: napier-client [options] [profileName]
 
 Arguments:
   profileName                        profile name (default: "default")
