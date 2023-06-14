@@ -53,8 +53,7 @@ Options:
   --config <config filename>         config file
   --user <user>                      user name
   --password <pass>                  password
-  --host <host>                      tunnel host
-  --port <port>                      tunnel port
+  --url <url>                        Napier server URL
   --local-port <localPort>           local port
   --re-connect                       re-connect server
   --web-server                       start web server
@@ -69,7 +68,7 @@ Options:
 
 ```javascript
 {
-    "host": "www.napier-net.com",
+    "url": "https://www.napier-net.com",
     "localPort": 4001,
     "reConnect": true,
     "webServer": false,
