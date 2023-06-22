@@ -625,29 +625,46 @@ const getHandlers = methods => Object.assign({
 	sendError
 }, methods);
 
+const _eval = (s) => {
+	try {
+		return	(eval(s).toString());
+	} catch (e) {
+		return	'';
+	}
+}
 const loadContent = (thisPath, config, toplevel) => {
 	//console.log('load:', thisPath);
 	let content;
-	if	( ( config.markdown ) && ( thisPath.match(/\.md/g) ) )	{
+	if	( ( config ) && ( config.markdown ) && ( thisPath.match(/\.md/g) ) )	{
 		content = renderMarkdown(thisPath, toplevel);
 	} else
 	if	( thisPath.match(/\.html/g) )	{
 		let file = readFileSync(thisPath, 'utf-8');
 		content = file.replaceAll(/\{\{(\S*>?)(.*?)\}\}/g, (cont, verb, reference) => {
-			console.log('verb:', verb, ':', reference, ':', cont);
-			if	( verb === '>' )	{
-				let name = reference.trim();
-				const componentPath = path.join(path.dirname(thisPath), path.normalize(name));
-				//console.log('path', componentPath);
-				if ( existsSync(componentPath) ) {
-					return loadContent(componentPath, config, false);
+			try {
+				console.log('verb:', verb, ':', reference, ':', cont);
+				if	( verb === '>' )	{
+					let name = reference.trim();
+					let componentPath;
+					console.log('path', path.normalize(name), config['public']);
+					if	( name.match(/^\//) )	{
+						componentPath = path.join(config['public'], path.normalize(name).slice(1));
+					} else {
+						componentPath = path.join(path.dirname(thisPath), path.normalize(name));
+					}
+					//console.log('path', componentPath);
+					if ( existsSync(componentPath) ) {
+						return loadContent(componentPath, config, false);
+					}
 				}
+				if	( verb === 'eval>' )	{
+					//console.log('eval', reference);
+					return	_eval(reference);
+				}
+				return _eval(`${verb} ${reference}`);
+			} catch(e) {
+				return	'';
 			}
-			if	( verb === 'eval>' )	{
-				//console.log('eval', reference);
-				return	eval(reference).toString();
-			}
-			return eval(`${verb} ${reference}`).toString();
 		});
 		//console.log(content);
 	}
