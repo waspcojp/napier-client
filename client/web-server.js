@@ -7,7 +7,7 @@ const http = require('http');
 const {promisify} = require('util');
 const path = require('path');
 const {createHash} = require('crypto');
-const {realpath, lstat, createReadStream, readdir, readFileSync} = require('fs');
+const {realpath, lstat, createReadStream, readdir, readFileSync, existsSync} = require('fs');
 
 const ORIGINAL = '../node_modules/serve-handler/src';
 
@@ -522,18 +522,22 @@ const mdInit = (_path) => {
 	return(_markdown);
 }
 
-const renderMarkdown = async (absolutePath) => {
+const renderMarkdown = (absolutePath, toplevel) => {
 	const App = require('./content.svelte').default;
 	try {
 		let markdown = mdInit('');
 		let source = readFileSync(absolutePath, 'utf-8');
 		let inner_html = markdown.render(source);
-		let {html} = App.render({
-			procs: {
-				html: inner_html
-			}
-		});
-		return	(html);
+		if	( toplevel )	{
+			let {html} = App.render({
+				procs: {
+					html: inner_html
+				}
+			});
+			return	(html);
+		} else {
+			return	(inner_html);
+		}
 	} catch(err)	{
 		console.log('markdown render error', err);
 		return	('');
@@ -621,12 +625,41 @@ const getHandlers = methods => Object.assign({
 	sendError
 }, methods);
 
+const loadContent = (thisPath, config, toplevel) => {
+	//console.log('load:', thisPath);
+	let content;
+	if	( ( config.markdown ) && ( thisPath.match(/\.md/g) ) )	{
+		content = renderMarkdown(thisPath, toplevel);
+	} else
+	if	( thisPath.match(/\.html/g) )	{
+		let file = readFileSync(thisPath, 'utf-8');
+		content = file.replaceAll(/\{\{(\S*>?)(.*?)\}\}/g, (cont, verb, reference) => {
+			console.log('verb:', verb, ':', reference, ':', cont);
+			if	( verb === '>' )	{
+				let name = reference.trim();
+				const componentPath = path.join(path.dirname(thisPath), path.normalize(name));
+				//console.log('path', componentPath);
+				if ( existsSync(componentPath) ) {
+					return loadContent(componentPath, config, false);
+				}
+			}
+			if	( verb === 'eval>' )	{
+				//console.log('eval', reference);
+				return	eval(reference).toString();
+			}
+			return eval(`${verb} ${reference}`).toString();
+		});
+		//console.log(content);
+	}
+	return	(content);
+}
+
 const handler = async (request, response, config = {}, methods = {}) => {
 	const cwd = process.cwd();
 	const current = config.public ? path.resolve(cwd, config.public) : cwd;
 	const handlers = getHandlers(methods);
 
-//console.log('url', request.url);
+	//console.log('url', request.url);
 
 	let relativePath = null;
 	let acceptsJSON = null;
@@ -645,7 +678,6 @@ const handler = async (request, response, config = {}, methods = {}) => {
 		});
 	}
 	let absolutePath = path.join(current, relativePath);
-//console.log('absolutePath', absolutePath);
 
 	// Prevent path traversal vulnerabilities. We could do this
 	// by ourselves, but using the package covers all the edge cases.
@@ -782,16 +814,14 @@ const handler = async (request, response, config = {}, methods = {}) => {
 	//	read contents here!!
 	const headers = await getHeaders(handlers, config, current, absolutePath, stats);
 
-	if	( ( config.markdown ) && ( absolutePath.match(/\.md/g) ) )	{
-		let content = await renderMarkdown(absolutePath);
-		if	( content )	{
-			response.statusCode = 200;
-			response.setHeader('Content-Type', 'text/html; charset=utf-8');
-			response.end(content);
-	
-			return;
-		}
+	let content = loadContent(absolutePath, config, true);
+	if	( content )	{
+		response.statusCode = 200;
+		response.setHeader('Content-Type', 'text/html; charset=utf-8');
+		response.end(content);
 		stats = null;
+	
+		return;
 	}
 	const streamOpts = {};
 
