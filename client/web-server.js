@@ -508,7 +508,7 @@ const mdInit = (_path) => {
 	_markdown.renderer.rules.table_open = () => {
 		return '<table class="table table-striped">\n';
 	};
-
+/*
 	_markdown.renderer.rules.paragraph_open =
 	_markdown.renderer.rules.heading_open = (tokens, idx, options, env, slf) => {
 		let line;
@@ -519,6 +519,7 @@ const mdInit = (_path) => {
 		}
 		return slf.renderToken(tokens, idx, options, env, slf);
 	}
+*/
 	return(_markdown);
 }
 
@@ -625,28 +626,75 @@ const getHandlers = methods => Object.assign({
 	sendError
 }, methods);
 
-const _eval = (s) => {
+const _eval = (s, _opts) => {
+	let opts = (_opts && _opts.length > 0) ? _opts : undefined;
+	console.log('_eval', s, ':', opts);
 	try {
-		return	(eval(s).toString());
+		let ret = eval(s).toString();
+		console.log('ret', ret);
+		return	ret;
 	} catch (e) {
+		console.log(e);
 		return	'';
 	}
 }
-const loadContent = (thisPath, config, toplevel) => {
-	//console.log('load:', thisPath);
+const parseMacro = (s) => {
+	let token = []
+	while	( s.length > 0 )	{
+		//console.log('s', s);
+		//console.log('token', token);
+		let ms;
+		if	( ms = s.match(/^(\s+)/) )	{
+			s = s.slice(ms[1].length);
+		} else
+		if	( ms = s.match(/^([\w,\/][\w,\/,\.,>]*)[\s,\(,\),\,,\',\"]|^([\w,\/][\w,\/,\.,>]*)$|^(\d+)[\s,\(,\),\,,\',\"]|^(\d+)$|^\'(.*)\'|^\"(.*)\"/) )	{
+			//console.log('ms', ms);
+			//console.log('push', ms[1]);
+			let word = ms[1] || ms[2] || ms[3] || ms[4] || ms[5] || ms[6];
+			token.push(word);
+			if	( ms[5] || ms[6] )	{
+				s = s.slice(word.length + 2);
+			} else {
+				s = s.slice(word.length);
+			}
+		} else {
+			//console.log('push', s.slice(0,1));
+			token.push(s.slice(0,1));
+			s = s.slice(1);
+		}
+	}
+	//console.log('token', token);
+	return	(token);
+}
+const loadContent = (thisPath, config, toplevel, opts) => {
+	//console.log('load:', thisPath, opts);
 	let content;
 	if	( ( config ) && ( config.markdown ) && ( thisPath.match(/\.md/g) ) )	{
-		content = renderMarkdown(thisPath, toplevel);
+		content = renderMarkdown(thisPath, toplevel, opts);
 	} else
 	if	( thisPath.match(/\.html/g) )	{
 		let file = readFileSync(thisPath, 'utf-8');
-		content = file.replaceAll(/\{\{(\S*>?)(.*?)\}\}/g, (cont, verb, reference) => {
+		content = file.replaceAll(/\{\{(.*?)\}\}/g, (_, macro) => {
+			let verb;
+			let reference;
+			let _opts;
+			console.log('macro', macro);
+			if	( macro.match(/^#/) )	{
+				return	'';
+			}
+			if	( macro.match(/^.*>/) ) {
+				let words = parseMacro(macro);
+				verb = words[0];
+				reference = words[1];
+				_opts = words.slice(2);
+			} 
+			let cont = macro;
 			try {
 				console.log('verb:', verb, ':', reference, ':', cont);
 				if	( verb === '>' )	{
 					let name = reference.trim();
 					let componentPath;
-					console.log('path', path.normalize(name), config['public']);
+					//console.log('path', path.normalize(name), config['public']);
 					if	( name.match(/^\//) )	{
 						componentPath = path.join(config['public'], path.normalize(name).slice(1));
 					} else {
@@ -654,14 +702,17 @@ const loadContent = (thisPath, config, toplevel) => {
 					}
 					//console.log('path', componentPath);
 					if ( existsSync(componentPath) ) {
-						return loadContent(componentPath, config, false);
+						console.log('opts', _opts);
+						return loadContent(componentPath, config, false, _opts);
 					}
 				}
 				if	( verb === 'eval>' )	{
-					//console.log('eval', reference);
-					return	_eval(reference);
+					let es = macro.replace(/^\s*eval\s*>/,'');
+					console.log('eval', es);
+					return	_eval(es, ops);
 				}
-				return _eval(`${verb} ${reference}`);
+				console.log('eval');
+				return _eval(`${macro}`, opts);
 			} catch(e) {
 				return	'';
 			}
