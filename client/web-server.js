@@ -628,10 +628,10 @@ const getHandlers = methods => Object.assign({
 
 const _eval = (s, _opts) => {
 	let opts = (_opts && _opts.length > 0) ? _opts : undefined;
-	console.log('_eval', s, ':', opts);
+	//console.log('_eval', s, ':', opts);
 	try {
 		let ret = eval(s).toString();
-		console.log('ret', ret);
+		//console.log('ret', ret);
 		return	ret;
 	} catch (e) {
 		console.log(e);
@@ -678,7 +678,7 @@ const loadContent = (thisPath, config, toplevel, opts) => {
 			let verb;
 			let reference;
 			let _opts;
-			console.log('macro', macro);
+			//console.log('macro', macro);
 			if	( macro.match(/^#/) )	{
 				return	'';
 			}
@@ -690,7 +690,7 @@ const loadContent = (thisPath, config, toplevel, opts) => {
 			} 
 			let cont = macro;
 			try {
-				console.log('verb:', verb, ':', reference, ':', cont);
+				//console.log('verb:', verb, ':', reference, ':', cont);
 				if	( verb === '>' )	{
 					let name = reference.trim();
 					let componentPath;
@@ -702,16 +702,16 @@ const loadContent = (thisPath, config, toplevel, opts) => {
 					}
 					//console.log('path', componentPath);
 					if ( existsSync(componentPath) ) {
-						console.log('opts', _opts);
+						//console.log('opts', _opts);
 						return loadContent(componentPath, config, false, _opts);
 					}
 				}
 				if	( verb === 'eval>' )	{
 					let es = macro.replace(/^\s*eval\s*>/,'');
-					console.log('eval', es);
+					//console.log('eval', es);
 					return	_eval(es, ops);
 				}
-				console.log('eval');
+				//console.log('eval');
 				return _eval(`${macro}`, opts);
 			} catch(e) {
 				return	'';
