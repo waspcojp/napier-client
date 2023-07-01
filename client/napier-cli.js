@@ -11,7 +11,6 @@ const axios = wrapper(_axios.create({ jar }));
 
 
 const LOCAL_PORT = 4000;
-const URL = 'http://localhost:8000';
 
 const   parseOptions = () => {
     program.option  ('--config <config filename>', 'config file');
