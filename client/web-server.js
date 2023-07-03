@@ -634,6 +634,7 @@ const _eval = (s, _opts) => {
 		//console.log('ret', ret);
 		return	ret;
 	} catch (e) {
+		console.log('eval>', s);
 		console.log(e);
 		return	'';
 	}
@@ -688,7 +689,6 @@ const loadContent = (thisPath, config, toplevel, opts) => {
 				reference = words[1];
 				_opts = words.slice(2);
 			} 
-			let cont = macro;
 			try {
 				//console.log('verb:', verb, ':', reference, ':', cont);
 				if	( verb === '>' )	{
@@ -704,6 +704,9 @@ const loadContent = (thisPath, config, toplevel, opts) => {
 					if ( existsSync(componentPath) ) {
 						//console.log('opts', _opts);
 						return loadContent(componentPath, config, false, _opts);
+					} else {
+						console.log('component not found', componentPath);
+						return	'';
 					}
 				}
 				if	( verb === 'eval>' )	{
@@ -758,6 +761,7 @@ const handler = async (request, response, config = {}, methods = {}) => {
 	}
 
 	const cleanUrl = applicable(relativePath, config.cleanUrls);
+/*
 	const redirect = shouldRedirect(relativePath, config, cleanUrl);
 
 	if (redirect) {
@@ -768,7 +772,7 @@ const handler = async (request, response, config = {}, methods = {}) => {
 		response.end();
 		return;
 	}
-
+*/
 	let stats = null;
 
 	// It's extremely important that we're doing multiple stat calls. This one
