@@ -67,7 +67,7 @@ const sourceMatches = (source, requestPath, allowSegments) => {
 
 	if (allowSegments) {
 		const normalized = slashed.replace('*', '(.*)');
-		const expression = pathToRegExp(normalized, keys);
+		const expression = pathToRegExp.pathToRegexp(normalized, keys);
 
 		results = expression.exec(resolvedPath);
 
@@ -114,7 +114,6 @@ const toTarget = (source, destination, previousPath) => {
 const applyRewrites = (requestPath, rewrites = [], repetitive) => {
 	// We need to copy the array, since we're going to modify it.
 	const rewritesCopy = rewrites.slice();
-
 	// If the method was called again, the path was already rewritten
 	// so we need to make sure to return it.
 	const fallback = repetitive ? requestPath : null;
@@ -122,11 +121,9 @@ const applyRewrites = (requestPath, rewrites = [], repetitive) => {
 	if (rewritesCopy.length === 0) {
 		return fallback;
 	}
-
 	for (let index = 0; index < rewritesCopy.length; index++) {
 		const {source, destination} = rewrites[index];
 		const target = toTarget(source, destination, requestPath);
-
 		if (target) {
 			// Remove rules that were already applied
 			rewritesCopy.splice(index, 1);
@@ -730,6 +727,7 @@ const handler = async (request, response, config = {}, methods = {}) => {
 	const current = config.public ? path.resolve(cwd, config.public) : cwd;
 	const handlers = getHandlers(methods);
 
+	//console.log(config);
 	//console.log('url', request.url);
 
 	let relativePath = null;
@@ -796,7 +794,6 @@ const handler = async (request, response, config = {}, methods = {}) => {
 			}
 		}
 	}
-
 	const rewrittenPath = applyRewrites(relativePath, config.rewrites);
 
 	if (!stats && (cleanUrl || rewrittenPath)) {
@@ -812,7 +809,6 @@ const handler = async (request, response, config = {}, methods = {}) => {
 			}
 		}
 	}
-
 	if (!stats) {
 		try {
 			stats = await handlers.lstat(absolutePath);
@@ -950,9 +946,44 @@ const handler = async (request, response, config = {}, methods = {}) => {
 
 let server = null;
 
+const readMap = (root) => {
+	const filename = path.join(root, 'map.rules');
+	let rewrite = [];
+	let redirect = [];
+
+	if	( existsSync(filename) )	{
+		let file = readFileSync(filename, 'utf-8');
+		let items;
+		for	( let line of file.split('\n') )	{
+			if	( items = line.split(/\s+/) )	{
+				//console.log(items);
+				if	( items[0].match(/rewriterule/i) )	{
+					rewrite.push({
+						source: items[1],
+						destination: items[2]
+					});
+				} else
+				if	( items[0].match(/redirectrule/i) )	{
+					redirect.push({
+						source: items[1],
+						destination: items[2]
+					});
+				}
+			}
+		}
+	}
+	return	({
+		rewrite: rewrite,
+		redirect: redirect
+	});
+}
+
 const start = (port, root, option) => {
 	option ||= {};
 	option['public'] = root;
+	let {rewrite, redirect} = readMap(root);
+	option['rewrites'] = rewrite;
+	option['redirects'] = redirect;
 	//console.log({option});
 
 	if	( !server )	{
