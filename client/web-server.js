@@ -645,18 +645,21 @@ const parseMacro = (s) => {
 		if	( ms = s.match(/^(\s+)/) )	{
 			s = s.slice(ms[1].length);
 		} else
-		if	( ms = s.match(/^([\w,\/][\w,\/,\.,>]*)[\s,\(,\),\,,\',\"]|^([\w,\/][\w,\/,\.,>]*)$|^(\d+)[\s,\(,\),\,,\',\"]|^(\d+)$|^\'(.*)\'|^\"(.*)\"/) )	{
+		if	( ms = s.match(/^([\w,\/][\w,\/,\.,>]*)[\s,\(,\),\',\"]|^([\w,\/][\w,\/,\.,>]*)$|^(\d+)[\s,\(,\),\',\"]|^(\d+)$|^\'(.*?)\'|^\"(.*?)\"/g) )	{
 			//console.log('ms', ms);
-			//console.log('push', ms[1]);
-			let word = ms[1] || ms[2] || ms[3] || ms[4] || ms[5] || ms[6];
+			let word = ms[0];
+            let ws;
+			//console.log('push', word);
+			s = s.slice(word.length);
+            if  ( ws = word.match(/\'(.*)\'/g))  {
+                word = word.slice(1,-1);
+            } else
+            if  ( ws = word.match(/\"(.*)\"/g))  {
+                word = word.slice(1,-1);
+            }
 			token.push(word);
-			if	( ms[5] || ms[6] )	{
-				s = s.slice(word.length + 2);
-			} else {
-				s = s.slice(word.length);
-			}
 		} else {
-			//console.log('push', s.slice(0,1));
+			//console.log('push*', s.slice(0,1));
 			token.push(s.slice(0,1));
 			s = s.slice(1);
 		}
@@ -684,7 +687,10 @@ const loadContent = (thisPath, config, toplevel, opts) => {
 				let words = parseMacro(macro);
 				verb = words[0];
 				reference = words[1];
-				_opts = words.slice(2);
+				if	( words[1] )	{
+					_opts = words.slice(2);
+					//console.log({_opts});
+				}
 			} 
 			try {
 				//console.log('verb:', verb, ':', reference, ':', cont);
