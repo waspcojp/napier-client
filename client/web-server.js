@@ -697,15 +697,12 @@ const loadContent = (thisPath, config, toplevel, opts) => {
 				if	( verb === '>' )	{
 					let name = reference.trim();
 					let componentPath;
-					//console.log('path', path.normalize(name), config['public']);
 					if	( name.match(/^\//) )	{
 						componentPath = path.join(config['public'], path.normalize(name).slice(1));
 					} else {
 						componentPath = path.join(path.dirname(thisPath), path.normalize(name));
 					}
-					//console.log('path', componentPath);
 					if ( existsSync(componentPath) ) {
-						//console.log('opts', _opts);
 						return loadContent(componentPath, config, false, _opts);
 					} else {
 						console.log('component not found', componentPath);
