@@ -624,7 +624,7 @@ const getHandlers = methods => Object.assign({
 }, methods);
 
 const _eval = (s, _opts) => {
-	let opts = (_opts && _opts.length > 0) ? _opts : undefined;
+	let opts = _opts ? _opts : undefined;
 	//console.log('_eval', s, ':', opts);
 	try {
 		let ret = eval(s).toString();
@@ -638,31 +638,15 @@ const _eval = (s, _opts) => {
 }
 const parseMacro = (s) => {
 	let token = []
-	while	( s.length > 0 )	{
-		//console.log('s', s);
-		//console.log('token', token);
-		let ms;
-		if	( ms = s.match(/^(\s+)/) )	{
-			s = s.slice(ms[1].length);
-		} else
-		if	( ms = s.match(/^([\w,\/][\w,\/,\.,>]*)[\s,\(,\),\',\"]|^([\w,\/][\w,\/,\.,>]*)$|^(\d+)[\s,\(,\),\',\"]|^(\d+)$|^\'(.*?)\'|^\"(.*?)\"/g) )	{
-			//console.log('ms', ms);
-			let word = ms[0];
-            let ws;
-			//console.log('push', word);
-			s = s.slice(word.length);
-            if  ( ws = word.match(/\'(.*)\'/g))  {
-                word = word.slice(1,-1);
-            } else
-            if  ( ws = word.match(/\"(.*)\"/g))  {
-                word = word.slice(1,-1);
-            }
-			token.push(word);
-		} else {
-			//console.log('push*', s.slice(0,1));
-			token.push(s.slice(0,1));
-			s = s.slice(1);
+	let ms;
+	//console.log('input', s);
+	if	( ms = s.match(/^(>)\s+([\/,\.,\w]+)\s*(.*)/s) )	{
+		//console.log('ms',ms);
+		for	( let i = 1; i < ms.length ; i += 1)	{
+			token.push(ms[i]);
 		}
+	} else {
+		token.push(s);
 	}
 	//console.log('token', token);
 	return	(token);
@@ -675,7 +659,7 @@ const loadContent = (thisPath, config, toplevel, opts) => {
 	} else
 	if	( thisPath.match(/\.html/g) )	{
 		let file = readFileSync(thisPath, 'utf-8');
-		content = file.replaceAll(/\{\{(.*?)\}\}/g, (_, macro) => {
+		content = file.replaceAll(/\{\{(.*?)\}\}/sg, (_, macro) => {
 			let verb;
 			let reference;
 			let _opts;
@@ -687,9 +671,14 @@ const loadContent = (thisPath, config, toplevel, opts) => {
 				let words = parseMacro(macro);
 				verb = words[0];
 				reference = words[1];
-				if	( words[1] )	{
-					_opts = words.slice(2);
-					//console.log({_opts});
+				if	( words[2] )	{
+					try {
+						_opts = Function(`return (${words[2]});`)();
+						//console.log('_opts', words[2], _opts);
+					} catch(e) {
+						console.log('eval', words[2]);
+						console.log(e);
+					}
 				}
 			} 
 			try {
@@ -714,7 +703,6 @@ const loadContent = (thisPath, config, toplevel, opts) => {
 					//console.log('eval', es);
 					return	_eval(es, ops);
 				}
-				//console.log('eval');
 				return _eval(`${macro}`, opts);
 			} catch(e) {
 				return	'';
