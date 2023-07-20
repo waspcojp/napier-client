@@ -1,6 +1,6 @@
 {
   "name": "napier-client",
-  "version": "2.5.2",
+  "version": "2.5.3",
   "description": "simple web proxy service client",
   "author": "Masami Ogoshi",
   "homepage": "https://github.com/waspcojp/napier-client",
@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "cli": "node ./client/napier-cli.js"
   },
-  "bin":{
+  "bin": {
     "napier-client": "bin/napier-client"
   },
   "license": "Apache-2.0-or-later",
@@ -23,6 +23,7 @@
     "connect-multiparty": "^2.2.0",
     "content-disposition": "^0.5.4",
     "deasync": "^0.1.28",
+    "ejs": "^3.1.9",
     "markdown-it": "^12.3.2",
     "markdown-it-abbr": "^1.0.4",
     "markdown-it-container": "^2.0.0",
