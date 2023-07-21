@@ -1,6 +1,6 @@
 {
   "name": "napier",
-  "version": "2.5.2",
+  "version": "2.5.3",
   "description": "simple web proxy service GUI client",
   "main": "main.js",
   "author": "Masami Ogoshi",
@@ -25,7 +25,7 @@
       "./preload.js",
       "./api.js",
       "./client/index.js",
-      "./client/web-server.js",
+      "./libs/web-server.js",
       "./client/content.svelte",
       "./client/directory.svelte",
       "./libs/message.js",
@@ -47,29 +47,31 @@
     },
     "mac": {
       "category": "public.app-category.developer-tools",
-      "target": ["dmg"],
+      "target": [
+        "dmg"
+      ],
       "icon": "public/MacOS_Icon.icns"
     },
     "dmg": {
-       "background": "public/DMG_Background.tiff",
-       "icon": "public/MacOS_Icon.icns",
-       "iconSize": 75,
-       "window": {
-           "width": 544,
-           "height": 408
-       },
-       "contents": [
-       {
-           "x": 20,
-           "y": 196
-       },
-       {
-            "x": 350,
-            "y": 196,
-            "type": "link",
-            "path": "/Applications"
+      "background": "public/DMG_Background.tiff",
+      "icon": "public/MacOS_Icon.icns",
+      "iconSize": 75,
+      "window": {
+        "width": 544,
+        "height": 408
+      },
+      "contents": [
+        {
+          "x": 20,
+          "y": 196
+        },
+        {
+          "x": 350,
+          "y": 196,
+          "type": "link",
+          "path": "/Applications"
         }
-        ]
+      ]
     },
     "win": {
       "target": "nsis",
@@ -98,6 +100,7 @@
     "connect-multiparty": "^2.2.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "ejs": "^3.1.9",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.1.0",
     "file-loader": "^6.2.0",

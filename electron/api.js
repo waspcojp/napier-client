@@ -3,7 +3,7 @@ const _axios = require('axios');
 const { wrapper } = require('axios-cookiejar-support');
 const { CookieJar } = require('tough-cookie');
 const qs = require('querystring');
-const webServer = require('./client/web-server');
+const webServer = require('./libs/web-server');
 const Store = require('electron-store');
 
 const ENV_FILE_NAME = 'napier';
