@@ -1,6 +1,6 @@
 {
   "name": "napier-client",
-  "version": "2.5.4",
+  "version": "2.5.5",
   "description": "simple web proxy service client",
   "author": "Masami Ogoshi",
   "homepage": "https://github.com/waspcojp/napier-client",
@@ -49,7 +49,6 @@
     "serve-handler": "^6.1.3",
     "sprightly": "^2.0.1",
     "sqlite3": "^5.0.10",
-    "svelte-preprocess": "^4.10.7",
     "tough-cookie": "^4.1.2",
     "ws": "^8.8.0"
   }
