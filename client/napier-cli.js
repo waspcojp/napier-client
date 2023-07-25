@@ -117,7 +117,7 @@ const makeConnection = (opts, profile) => {
             console.log('login fail', res.data.message);
         }
     }).catch ((e) => {
-        console.log('login connection refused');
+        console.log('login connection refused', e);
     })
 }
 
@@ -144,7 +144,7 @@ const   main = () => {
                         console.log('error', e);
                     }
                 }
-            }, 1000);
+            }, 1000 * 5);
         } else {
             makeConnection(opts, profile);
         }
