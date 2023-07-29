@@ -36,7 +36,7 @@ const   parseOptions = () => {
         try {
             let config = JSON.parse(fs.readFileSync(opts.config, 'utf-8'));
             Object.keys(opts).forEach((key) => {
-                    console.log('key', key, opts[key]);
+                    //console.log('key', key, opts[key]);
                     config[key] = opts[key];
             });
             if  ( config['profile'] )   {
@@ -111,7 +111,7 @@ const makeConnection = (opts, profile) => {
                     console.log('ready fail');
                 }
             }).catch((e) => {
-                console.log('proxy network error');
+                console.log('proxy network error',e);
             })
         } else {
             console.log('login fail', res.data.message);
