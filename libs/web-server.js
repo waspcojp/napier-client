@@ -1069,7 +1069,7 @@ const handler = async (request, response, config = {}, methods = {}) => {
 	//console.log(request.method, request.url);
 	//console.log('headers', request.headers);
 
-	//console.log(config);
+	console.log(config);
 	//console.log({session});
 	if	( config.authenticate )	{
 		if ( !session || !session.user_name )	{
@@ -1176,7 +1176,8 @@ const readMap = (root) => {
 	let redirect = [];
 	let ignore = [
 		/password\.json/i,
-		/session_.*\.json/i
+		/session_.*\.json/i,
+		/map\.rules/i
 	];
 	if	( existsSync(filename) )	{
 		let file = readFileSync(filename, 'utf-8');
@@ -1218,7 +1219,7 @@ const start = (port, root, option) => {
 	option['rewrites'] = rewrite;
 	option['redirects'] = redirect;
 	option['ignores'] = ignores;
-	option['authenticate'] = true;
+	//option['authenticate'] = true;
 	//console.log({option});
 	thisConfig = option;
 
