@@ -36,6 +36,20 @@
                 マークダウン形式をサーバでレンダリングする
             </label>
         </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox"
+                disabled={run}
+                bind:checked={conf.authenticate} value=true id="authenticate">
+            <label class="form-check-label" for="authenticate"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="あらかじめ登録された利用者のみアクセス可能になります">
+                組み込み認証機能を使う
+            </label>
+            <button type="button" class="btn btn-info"
+                disabled={run || !conf.authenticate}
+                on:click={editPassword}>パスワードファイル編集</button>
+        </div>
         <div class="row">
             <label for="root" class="col-sm-4 col-form-label"
                 data-bs-toggle="tooltip"
@@ -81,6 +95,7 @@
 
 <script>
 import {onMount, beforeUpdate, afterUpdate, createEventDispatcher} from 'svelte';
+const dispatch = createEventDispatcher();
 
 let conf;
 let run;
@@ -100,7 +115,8 @@ onMount(()=> {
                 port: _env.webServer.port,
                 directoryListing: _env.webServer.directoryListing,
                 symlinks: _env.webServer.symlinks,
-                markdown: _env.webServer.markdown
+                markdown: _env.webServer.markdown,
+                authenticate: _env.webServer.authenticate
             };
         }
     }).catch((e) => {
@@ -113,7 +129,7 @@ onMount(()=> {
 });
 
 const update = () => {
-    //console.log('update', conf);
+    console.log('update', conf);
     api.setConf({
         webServer: conf
     });
@@ -141,5 +157,9 @@ const openDialog = async () => {
     if  ( path ) {
         conf.public = path;
     }
+}
+
+const editPassword = () => {
+    dispatch('editPassword');
 }
 </script>

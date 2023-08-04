@@ -10,8 +10,9 @@ module.exports = {
 	mode: MODE,
 	context: path.resolve(__dirname, '.'),
     entry: {
-		renderer: './renderer.js',
-		electron: './electron.js'
+		renderer: 'renderer.js',
+		electron: 'electron.js',
+		password: 'password.js'
 	},
     output: {
         path: path.resolve(__dirname, 'dist'),

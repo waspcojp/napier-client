@@ -2,8 +2,8 @@ const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const path = require("path");
 
 const api = require('./api');
-const WIDTH = 1200;
-//const WIDTH = 1600;
+//const WIDTH = 1200;
+const WIDTH = 1600;
 const HEIGHT = 1000;
 
 let mainWindow;
@@ -21,12 +21,14 @@ const createWindow = () => {
             preload: path.join(__dirname, "preload.js"),
         },
     });
-    mainWindow.loadFile("index.html");
+    mainWindow.loadFile("front/html/index.html");
 
     if  ( WIDTH > 1200 )    {
         mainWindow.webContents.openDevTools();
     }
-
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.show();
+    })
     mainWindow.on("closed", () => {
         mainWindow = null;
     });
@@ -47,6 +49,34 @@ const dialogOpen = (ev, args) => {
     });
 }
 
+let passwordWindow;
+const passwordOpen = (ev, args) => {
+    console.log('passwordOpen');
+    passwordWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: WIDTH / 2,
+        height: HEIGHT / 2,
+        center: true,
+        resizable: true,
+        modal: true,
+        show: false
+    });
+    passwordWindow.loadFile("front/html/password.html");
+    passwordWindow.once('ready-to-show', () => {
+        console.log('show');
+        passwordWindow.show();
+    });
+    passwordWindow.on('close', () => {
+
+    });
+    passwordWindow.on('closed', () => {
+        passwordWindow = null;
+    });
+}
+
+const passwordClose = (ev, args) => {
+    passwordWindow.close();
+}
 
 app.whenReady().then(() => {
     createWindow();
@@ -59,6 +89,7 @@ app.whenReady().then(() => {
     ipcMain.handle('user:put', api.putUser)
     ipcMain.handle('env:set', api.setConf);
     ipcMain.handle('env:get', api.getConf);
+    ipcMain.handle('password:get', api.getPassword);
     ipcMain.handle('profiles', api.getProfiles);
     ipcMain.handle('profile:update', api.updateProfile);
     ipcMain.handle('profile:delete', api.deleteProfile);
@@ -66,6 +97,8 @@ app.whenReady().then(() => {
     ipcMain.handle('proxy:stop', api.stopProxy);
     ipcMain.handle('proxy:check', api.checkProxy);
     ipcMain.handle('dialog:open', dialogOpen);
+    ipcMain.handle('password:open', passwordOpen);
+    ipcMain.handle('password:close', passwordClose);
     ipcMain.handle('web-server:start', api.startWebServer);
     ipcMain.handle('web-server:stop', api.stopWebServer);
     ipcMain.handle('web-server:check', api.checkWebServer);

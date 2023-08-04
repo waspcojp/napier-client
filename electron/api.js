@@ -5,6 +5,8 @@ const { CookieJar } = require('tough-cookie');
 const qs = require('querystring');
 const webServer = require('./libs/web-server');
 const Store = require('electron-store');
+const fs = require('fs');
+const path = require('path');
 
 const ENV_FILE_NAME = 'napier';
 
@@ -23,7 +25,7 @@ const init = () => {
         profiles: {},
         webServer: {}
     });
-    //console.log('init', env);
+    console.log('init', env);
 }
 
 const login = (ev, args) => {
@@ -255,6 +257,18 @@ const getConf = (ev, args) => {
     });
 }
 
+const getPassword = (ev, args) => {
+    return new Promise ((resolve, reject) => {
+        let _env = copyEnv();
+        let file = fs.readFileSync(path.join(_env.webServer.public, '/password.json'), 'utf-8');
+        let password = JSON.parse(file);
+        resolve(password);
+    }).catch((e) => {
+        console.log('getPassword', e);
+        reject();
+    });
+}
+
 const startProxy = (ev, args) => {
     let profile_name = args.profile;
     let localPort = args.localPort;
@@ -297,7 +311,7 @@ const checkProxy = (ev, args) => {
 
 const startWebServer = (ev, args) => {
     let conf = env.webServer;
-    //console.log('startWebServer(api.js)', conf);
+    console.log('startWebServer(api.js)', conf);
 
     return new Promise((resolve, reject) => {
         webServer.start(conf.port, conf.public, conf);
@@ -337,6 +351,7 @@ module.exports = {
     setConf: setConf,
     getUser: getUser,
     putUser: putUser,
+    getPassword: getPassword,
     getProfiles: getProfiles,
     updateProfile: updateProfile,
     deleteProfile: deleteProfile,

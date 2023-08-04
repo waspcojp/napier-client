@@ -191,6 +191,14 @@ const getConf = () => {
     })
 }
 
+const getPassword = () => {
+    return new Promise((resolve, reject) => {
+        ipcRenderer.invoke('password:get').then((res) => {
+            resolve(res);
+        })
+    })
+}
+
 const startProxy = (profile_name, port) => {
     return new Promise((resolve, reject) => {
         ipcRenderer.invoke('proxy:start', {
@@ -260,6 +268,27 @@ const checkWebServer = () => {
     })
 }
 
+const passwordOpen = (info) => {
+    return new Promise((resolve, reject) => {
+        ipcRenderer.invoke('password:open', info).then((res) => {
+            resolve(res);
+        }).catch((e) => {
+            reject();
+        })
+    })
+}
+
+const passwordClose = () => {
+    console.log('passwordClose');
+    return new Promise((resolve, reject) => {
+        ipcRenderer.invoke('password:close').then((res) => {
+            resolve(res);
+        }).catch((e) => {
+            reject();
+        })
+    })
+}
+
 const init = () => {
     //console.log('env', env);
     getConf().then((_env) => {
@@ -276,6 +305,9 @@ const init = () => {
             deleteProfile: deleteProfile,
             setConf: setConf,
             getConf: getConf,
+            passwordOpen: passwordOpen,
+            passwordClose: passwordClose,
+            getPassword: getPassword,
             startProxy: startProxy,
             stopProxy: stopProxy,
             checkProxy: checkProxy,
