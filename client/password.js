@@ -7,6 +7,10 @@ const   main = () => {
     program.option('--file <password filename>', 'password file');
     program.option('--user <user>',              'user name');
     program.option("--password <password>",      "password");
+    program.option("--description <description>","user description");
+    program.option("--stop",                     "user ban");
+    program.option("--restart",                  "user restart");
+    program.option("--delete",                   "user delete");
     program.option("--create",                   "file new create");
 
     program.parse();
@@ -24,11 +28,21 @@ const   main = () => {
     }
     try {
         let users = JSON.parse(fs.readFileSync(opts.file, 'utf-8'));
-        let hash_password = bcrypt.hashSync(opts.password, SALT_ROUNDS);
-        users[opts.user] = {
-            hash_password: hash_password
-        };
-        fs.writeFileSync(opts.file, JSON.stringify(users, ' ', 2));
+        if  ( opts.user )   {
+            if  ( opts.delete ) {
+                users[opts.user] = undefined;
+            } else {
+                users[opts.user] = {
+                    hash_password: opts.password ? bcrypt.hashSync(opts.password, SALT_ROUNDS) : 
+                            users[opts.user].hash_password,
+                    description: opts.description ? opts.description :
+                            users[opts.user].description,
+                    expire: opts.stop ? new Date() :
+                            ( opts.restart ? undefined : users[opts.user].expire)
+                };
+            }
+            fs.writeFileSync(opts.file, JSON.stringify(users, ' ', 2));
+        }
     } catch (e) {
         console.log(e);
     }
