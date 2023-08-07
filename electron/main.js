@@ -90,6 +90,7 @@ app.whenReady().then(() => {
     ipcMain.handle('env:set', api.setConf);
     ipcMain.handle('env:get', api.getConf);
     ipcMain.handle('password:get', api.getPassword);
+    ipcMain.handle('password:put', api.putPassword);
     ipcMain.handle('profiles', api.getProfiles);
     ipcMain.handle('profile:update', api.updateProfile);
     ipcMain.handle('profile:delete', api.deleteProfile);

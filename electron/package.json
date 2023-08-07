@@ -1,6 +1,6 @@
 {
   "name": "napier",
-  "version": "2.5.5",
+  "version": "2.67.5",
   "description": "simple web proxy service GUI client",
   "main": "main.js",
   "author": "Masami Ogoshi",
@@ -95,7 +95,7 @@
     "assert": "^2.0.0",
     "axios": "^0.27.2",
     "axios-cookiejar-support": "^4.0.3",
-    "bcrypt": "^5.0.1",
+    "bcrypt": "^5.1.0",
     "bootstrap": "^5.2.0",
     "bootstrap-icons": "^1.9.1",
     "commander": "^9.4.0",

@@ -199,6 +199,14 @@ const getPassword = () => {
     })
 }
 
+const putPassword = (password) => {
+    return new Promise((resolve, reject) => {
+        ipcRenderer.invoke('password:put', password).then((res) => {
+            resolve(res);
+        })
+    })
+}
+
 const startProxy = (profile_name, port) => {
     return new Promise((resolve, reject) => {
         ipcRenderer.invoke('proxy:start', {
@@ -308,6 +316,7 @@ const init = () => {
             passwordOpen: passwordOpen,
             passwordClose: passwordClose,
             getPassword: getPassword,
+            putPassword: putPassword,
             startProxy: startProxy,
             stopProxy: stopProxy,
             checkProxy: checkProxy,

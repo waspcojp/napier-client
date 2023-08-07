@@ -7,6 +7,8 @@ const webServer = require('./libs/web-server');
 const Store = require('electron-store');
 const fs = require('fs');
 const path = require('path');
+const bcrypt = require('bcrypt');
+const SALT_ROUNDS = 10;
 
 const ENV_FILE_NAME = 'napier';
 
@@ -261,12 +263,40 @@ const getPassword = (ev, args) => {
     return new Promise ((resolve, reject) => {
         let _env = copyEnv();
         let file = fs.readFileSync(path.join(_env.webServer.public, '/password.json'), 'utf-8');
-        let password = JSON.parse(file);
+        let password = [];
+        entries = JSON.parse(file);
+        for ( let name of Object.keys(entries)) {
+            let ent = entries[name];
+            password.push({
+                name: name,
+                description: ent.description,
+                expire: ent.expire,
+                hash_password: ent.hash_password
+            });
+        }
         resolve(password);
     }).catch((e) => {
         console.log('getPassword', e);
         reject();
     });
+}
+const putPassword = (ev, password) => {
+    return new Promise((resolve, reject) => {
+        let _password = {};
+        for ( let entry of password)    {
+            _password[entry.name] = {
+                description: entry.description,
+                expire: entry.expire,
+                hash_password: ( entry.hash_password ) ? entry.hash_password : bcrypt.hashSync(entry.password, SALT_ROUNDS)
+            }
+        }
+        let _env = copyEnv();
+        fs.writeFileSync(path.join(_env.webServer.public, '/password.json'), JSON.stringify(_password, ' ', 2));
+        resolve();
+    }).catch((e) => {
+        console.log('putPassword', e);
+        reject();
+    })
 }
 
 const startProxy = (ev, args) => {
@@ -352,6 +382,7 @@ module.exports = {
     getUser: getUser,
     putUser: putUser,
     getPassword: getPassword,
+    putPassword: putPassword,
     getProfiles: getProfiles,
     updateProfile: updateProfile,
     deleteProfile: deleteProfile,
