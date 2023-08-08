@@ -13,18 +13,19 @@ const axios = wrapper(_axios.create({ jar }));
 const LOCAL_PORT = 4000;
 
 const   parseOptions = () => {
-    program.option  ('--config <config filename>', 'config file');
-    program.option  ('--user <user>',              'user name');
-    program.option  ("--password <password>",              "password");
-    program.option  ('--url <URL>',                'server URL');
-    program.option  ('--local-port <localPort>',   'local port');
-    program.option  ('--re-connect',               're-connect server');
-    program.option  ('--web-server',               'start web server');
-    program.option  ('--server-config <config filename>', 'web server config file');
-    program.option  ('--document-root <path>',     'web server document root');
-    program.option  ('--index',                    'list index');
-    program.option  ('--markdown',                 'markdown SSR');
-    program.option  ('--authenticate',             'password authentication');
+    program.option('--config <config filename>', 'config file');
+    program.option('--user <user>',              'user name');
+    program.option("--password <password>",      "password");
+    program.option('--url <URL>',                'server URL');
+    program.option('--local-port <localPort>',   'local port');
+    program.option('--re-connect',               're-connect server');
+    program.option('--web-server',               'start web server');
+    program.option('--server-config <config filename>', 'web server config file');
+    program.option('--document-root <path>',     'web server document root');
+    program.option('--index',                    'list index');
+    program.option('--markdown',                 'markdown SSR');
+    program.option('--javascript',               'server side Javascript execution');
+    program.option('--authenticate',             'password authentication');
 
     program.argument('[profileName]',              'profile name', 'default');
     program.parse();
@@ -51,6 +52,7 @@ const   parseOptions = () => {
     opts['webServer'] ||= false;
     opts['index'] ||= false;
     opts['authenticate'] ||= false;
+    opts['javascript'] ||= false;
     //console.log({opts}, args);
 
     return  { opts: opts, profile: args[0]};
