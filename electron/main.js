@@ -2,9 +2,9 @@ const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const path = require("path");
 
 const api = require('./api');
-//const WIDTH = 1200;
-const WIDTH = 1600;
-const HEIGHT = 1000;
+const WIDTH = 1200;
+//const WIDTH = 1600;
+const HEIGHT = 800;
 
 let mainWindow;
 const createWindow = () => {

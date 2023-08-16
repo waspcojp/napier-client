@@ -17,7 +17,7 @@ const   main = () => {
 
     let opts = program.opts();
     opts['file'] ||= 'password.json'
-    //console.log({opts});
+    console.log({opts});
     if  ( opts.create ) {
         try {
             console.log('new password file create')
@@ -34,11 +34,12 @@ const   main = () => {
             } else {
                 users[opts.user] = {
                     hash_password: opts.password ? bcrypt.hashSync(opts.password, SALT_ROUNDS) : 
-                            users[opts.user].hash_password,
+                            ( users[opts.user] ? users[opts.user].hash_password : undefined ),
                     description: opts.description ? opts.description :
-                            users[opts.user].description,
+                            ( users[opts.user] ? users[opts.user].description : undefined ),
                     expire: opts.stop ? new Date() :
-                            ( opts.restart ? undefined : users[opts.user].expire)
+                            ( opts.restart ? undefined : 
+                                ( users[opts.user] ? users[opts.user].expire : undefined))
                 };
             }
             fs.writeFileSync(opts.file, JSON.stringify(users, ' ', 2));

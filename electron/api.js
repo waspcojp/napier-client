@@ -287,7 +287,8 @@ const putPassword = (ev, password) => {
             _password[entry.name] = {
                 description: entry.description,
                 expire: entry.expire,
-                hash_password: ( entry.hash_password ) ? entry.hash_password : bcrypt.hashSync(entry.password, SALT_ROUNDS)
+                hash_password: ( entry.hash_password ) ? entry.hash_password : 
+                    ( entry.password ? bcrypt.hashSync(entry.password, SALT_ROUNDS) : undefined)
             }
         }
         let _env = copyEnv();

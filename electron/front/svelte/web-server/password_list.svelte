@@ -2,7 +2,7 @@
     <div class="card-header">
         利用者一覧
     </div>
-    <div class="card-body">
+    <div class="card-body" style="overflow-y:auto;height:220px;">
         <table class="table">
             <thead>
                 <tr>

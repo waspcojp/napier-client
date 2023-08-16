@@ -39,6 +39,17 @@
         <div class="form-check">
             <input class="form-check-input" type="checkbox"
                 disabled={run}
+                bind:checked={conf.javascript} value=true id="javascript">
+            <label class="form-check-label" for="javascript"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="要するにCGI的なものです">
+                Javascriptで書かれたプログラムをサーバで実行する
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox"
+                disabled={run}
                 bind:checked={conf.authenticate} value=true id="authenticate">
             <label class="form-check-label" for="authenticate"
                 data-bs-toggle="tooltip"
@@ -116,7 +127,8 @@ onMount(()=> {
                 directoryListing: _env.webServer.directoryListing,
                 symlinks: _env.webServer.symlinks,
                 markdown: _env.webServer.markdown,
-                authenticate: _env.webServer.authenticate
+                authenticate: _env.webServer.authenticate,
+                javascript: _env.webServer.javascript
             };
         }
     }).catch((e) => {
