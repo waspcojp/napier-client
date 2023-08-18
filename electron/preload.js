@@ -153,6 +153,7 @@ const deleteProfile = (profile_id) => {
 }
 
 const setConf = (conf) => {
+    //console.log('setConf', conf);
     return new Promise((resolve, reject) => {
         if  ( conf )    {
             if  ( conf.host )   {

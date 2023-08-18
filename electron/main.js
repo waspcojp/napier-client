@@ -51,7 +51,7 @@ const dialogOpen = (ev, args) => {
 
 let passwordWindow;
 const passwordOpen = (ev, args) => {
-    console.log('passwordOpen');
+    //console.log('passwordOpen');
     passwordWindow = new BrowserWindow({
         parent: mainWindow,
         width: WIDTH / 2,

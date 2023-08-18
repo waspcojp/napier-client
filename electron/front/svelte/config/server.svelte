@@ -62,7 +62,9 @@ const Update = () => {
 onMount(() => {
     //console.log('beforeUpdate server.svelte', host);
     if  ( !host )   {
-        host = env.host;
+        api.getConf().then((res) => {
+            host = res.host;
+        })
     }
 })
 const Connect = () => {

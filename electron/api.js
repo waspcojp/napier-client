@@ -27,7 +27,7 @@ const init = () => {
         profiles: {},
         webServer: {}
     });
-    console.log('init', env);
+    //console.log('init', env);
 }
 
 const login = (ev, args) => {
@@ -342,7 +342,7 @@ const checkProxy = (ev, args) => {
 
 const startWebServer = (ev, args) => {
     let conf = env.webServer;
-    console.log('startWebServer(api.js)', conf);
+    //console.log('startWebServer(api.js)', conf);
 
     return new Promise((resolve, reject) => {
         webServer.start(conf.port, conf.public, conf);
