@@ -19,7 +19,7 @@
     "productName": "napier",
     "files": [
       "./main.js",
-      "./index.html",
+      "./front/html/index.html",
       "./renderer.js",
       "./proxy.js",
       "./preload.js",
