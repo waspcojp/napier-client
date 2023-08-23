@@ -4,7 +4,7 @@ const path = require("path");
 const api = require('./api');
 const WIDTH = 1200;
 //const WIDTH = 1600;
-const HEIGHT = 800;
+const HEIGHT = 900;
 
 let mainWindow;
 const createWindow = () => {

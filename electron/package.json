@@ -1,6 +1,6 @@
 {
   "name": "napier",
-  "version": "2.67.5",
+  "version": "2.67.7",
   "description": "simple web proxy service GUI client",
   "main": "main.js",
   "author": "Masami Ogoshi",

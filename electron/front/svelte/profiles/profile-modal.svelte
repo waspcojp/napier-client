@@ -48,6 +48,21 @@
                             </label>
                         </div>
                     </div>
+                    <div class="row mb-3">
+                        <label for="lets" class="col-sm-2 col-form-label"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="証明書をLet's Encryptを使って自動的に取得します。">
+                            Let's Encrypt
+                        </label>
+                        <div class="col-sm-10">
+                            <input type="checkbox" class="form-checkbox-input" bind:checked={profile.lets} id="lets">
+                            <label class="form-checkbox-label" for="lets">
+                                Let's Encryptを使う
+                            </label>
+                        </div>
+                    </div>
+                    {#if ( !profile.lets)}
                     <hr/>
                     <div class="row mb-3">
                         <p>
@@ -86,6 +101,7 @@
                             <textarea class="form-control monospace" bind:value={profile.ca} rows="4"></textarea>
                         </div>
                     </div>
+                    {/if}
                     {/if}
                 </div>
             </div>
