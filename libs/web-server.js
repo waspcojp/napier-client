@@ -35,6 +35,8 @@ const ejs = require('ejs');
 const MarkdownIt = require('markdown-it');
 const Emoji = require("markdown-it-emoji");
 const Prism = require("markdown-it-prism");
+const Attrs = require("markdown-it-attrs");
+const Anchor = require("markdown-it-anchor");
 const ReplaceLink = require("markdown-it-replace-link");
 require("prismjs/components/prism-bash");
 require("prismjs/components/prism-c");
@@ -605,6 +607,8 @@ const mdInit = (_path) => {
 			typographer:  true,         // Enable smartypants and other sweet transforms
 		})
 		.use((Emoji))
+		.use(Attrs)
+		.use(Anchor)
 		.use((Prism), {
 			plugins: [
 				'line-numbers'
@@ -1316,7 +1320,8 @@ const readMap = (root) => {
 	let ignore = [
 		/password\.json/i,
 		/session_.*\.json/i,
-		/map\.rules/i
+		/map\.rules/i,
+		/\.git.*/i
 	];
 	if	( existsSync(filename) )	{
 		let file = readFileSync(filename, 'utf-8');
