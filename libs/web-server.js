@@ -333,7 +333,7 @@ const findRelated = async (current, relativePath, rewrittenPath, originalStat) =
 	for (let index = 0; index < possible.length; index++) {
 		const related = possible[index];
 		const absolutePath = path.join(current, related);
-
+		//console.log({absolutePath});
 		try {
 			stats = await originalStat(absolutePath);
 		} catch (err) {
@@ -993,7 +993,7 @@ const execGET = async (request, response, session, config, absolutePath, relativ
 		return handlers.sendError(absolutePath, response, acceptsJSON, current, handlers, config, {
 			statusCode: 404,
 			code: 'not_found',
-			message: 'The requested path could not be found'
+			message: `The requested path(${request.url}) could not be found`
 		});
 	}
 	if (isSymLink) {
@@ -1278,6 +1278,7 @@ const handler = async (request, response, config = {}, methods = {}) => {
 	}
 	let rewrited = false;
 	const rewrittenPath = applyRewrites(relativePath, config.rewrites);
+	//console.log(rewrittenPath);
 //	if (!stats && (cleanUrl || rewrittenPath)) {	元々のロジックでは、素のHTMLがない時だけrewriteが発動していた。テンプレート適用機能{{>}}のために潰す
 	if (cleanUrl || rewrittenPath) {
 		try {
@@ -1327,6 +1328,9 @@ const readMap = (root) => {
 		let file = readFileSync(filename, 'utf-8');
 		let items;
 		for	( let line of file.split('\n') )	{
+			if	( line.match(/^\s*#/) )	{
+				//console.log('comment', line);
+			} else
 			if	( items = line.split(/\s+/) )	{
 				//console.log(items);
 				if	( items[0].match(/rewriterule/i) )	{
