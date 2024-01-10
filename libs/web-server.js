@@ -86,18 +86,18 @@ const calculateSha = (handlers, absolutePath) =>
 	});
 
 const sourceMatches = (source, requestPath, allowSegments) => {
+console.log('sourceMatches', source, requestPath, allowSegments);
 	const keys = [];
 	const slashed = slasher(source);
-	const resolvedPath = path.posix.resolve(requestPath);
+	//const resolvedPath = path.posix.resolve(requestPath);
+	const resolvedPath = requestPath;
 
 	let results = null;
 
 	if (allowSegments) {
 		const normalized = slashed.replace('*', '(.*)');
-		const expression = pathToRegExp.pathToRegexp(normalized, keys);
-
+		const expression = pathToRegExp.pathToRegexp(normalized, keys, { validate: false});
 		results = expression.exec(resolvedPath);
-
 		if (!results) {
 			// clear keys so that they are not used
 			// later with empty results. this may
@@ -165,11 +165,11 @@ const applyRewrites = (requestPath, rewrites = [], repetitive) => {
 
 const ensureSlashStart = target => (target.startsWith('/') ? target : `/${target}`);
 
-const shouldRedirect = (decodedPath, {redirects = [], trailingSlash}, cleanUrl) => {
+const shouldRedirect = (decodedPath, { redirects = [], trailingSlash}, cleanUrl) => {
 	const slashing = typeof trailingSlash === 'boolean';
 	const defaultType = 301;
 	const matchHTML = /(\.html|\/index)$/g;
-
+	console.log('shouldRedirect', {slashing}, {decodedPath}, {redirects});
 	if (redirects.length === 0 && !slashing && !cleanUrl) {
 		return null;
 	}
@@ -205,6 +205,7 @@ const shouldRedirect = (decodedPath, {redirects = [], trailingSlash}, cleanUrl) 
 		if (decodedPath.indexOf('//') > -1) {
 			target = decodedPath.replace(/\/+/g, '/');
 		}
+console.log({target});
 
 		if (target) {
 			return {
@@ -213,7 +214,6 @@ const shouldRedirect = (decodedPath, {redirects = [], trailingSlash}, cleanUrl) 
 			};
 		}
 	}
-
 	// This is currently the fastest way to
 	// iterate over an array
 	for (let index = 0; index < redirects.length; index++) {
@@ -1253,8 +1253,7 @@ const handler = async (request, response, config = {}, methods = {}) => {
 
 	const cleanUrl = applicable(relativePath, config.cleanUrls);
 /*
-	const redirect = shouldRedirect(relativePath, config, cleanUrl);
-
+	const redirect = shouldRedirect(relativePath, config , cleanUrl);
 	if (redirect) {
 		response.writeHead(redirect.statusCode, {
 			Location: encodeURI(redirect.target)
@@ -1278,7 +1277,7 @@ const handler = async (request, response, config = {}, methods = {}) => {
 	}
 	let rewrited = false;
 	const rewrittenPath = applyRewrites(relativePath, config.rewrites);
-	//console.log(rewrittenPath);
+	console.log({rewrittenPath});
 //	if (!stats && (cleanUrl || rewrittenPath)) {	元々のロジックでは、素のHTMLがない時だけrewriteが発動していた。テンプレート適用機能{{>}}のために潰す
 	if (cleanUrl || rewrittenPath) {
 		try {
@@ -1322,7 +1321,8 @@ const readMap = (root) => {
 		/password\.json/i,
 		/session_.*\.json/i,
 		/map\.rules/i,
-		/\.git.*/i
+		/\.git.*/i,
+		/node_modules/i
 	];
 	if	( existsSync(filename) )	{
 		let file = readFileSync(filename, 'utf-8');
@@ -1332,7 +1332,7 @@ const readMap = (root) => {
 				//console.log('comment', line);
 			} else
 			if	( items = line.split(/\s+/) )	{
-				//console.log(items);
+				console.log(items);
 				if	( items[0].match(/rewriterule/i) )	{
 					rewrite.push({
 						source: items[1],
@@ -1351,6 +1351,7 @@ const readMap = (root) => {
 			}
 		}
 	}
+	console.log({redirect});
 	return	({
 		rewrite: rewrite,
 		redirect: redirect,
@@ -1366,6 +1367,7 @@ const start = (port, root, option) => {
 	let {rewrite, redirect, ignores} = readMap(root);
 	option['rewrites'] = rewrite;
 	option['redirects'] = redirect;
+	option['trailingSlash'] = true;
 	option['ignores'] = ignores;
 	//option['authenticate'] = true;
 	//option['javascript'] = true;
