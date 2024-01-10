@@ -86,7 +86,7 @@ const calculateSha = (handlers, absolutePath) =>
 	});
 
 const sourceMatches = (source, requestPath, allowSegments) => {
-console.log('sourceMatches', source, requestPath, allowSegments);
+//console.log('sourceMatches', source, requestPath, allowSegments);
 	const keys = [];
 	const slashed = slasher(source);
 	//const resolvedPath = path.posix.resolve(requestPath);
@@ -169,7 +169,7 @@ const shouldRedirect = (decodedPath, { redirects = [], trailingSlash}, cleanUrl)
 	const slashing = typeof trailingSlash === 'boolean';
 	const defaultType = 301;
 	const matchHTML = /(\.html|\/index)$/g;
-	console.log('shouldRedirect', {slashing}, {decodedPath}, {redirects});
+	//console.log('shouldRedirect', {slashing}, {decodedPath}, {redirects});
 	if (redirects.length === 0 && !slashing && !cleanUrl) {
 		return null;
 	}
@@ -205,7 +205,7 @@ const shouldRedirect = (decodedPath, { redirects = [], trailingSlash}, cleanUrl)
 		if (decodedPath.indexOf('//') > -1) {
 			target = decodedPath.replace(/\/+/g, '/');
 		}
-console.log({target});
+//console.log({target});
 
 		if (target) {
 			return {
@@ -801,7 +801,7 @@ const _eval = (s, _opts) => {
 	try {
 		let ret = eval(s);
 		ret = ret ? ret.toString() : '';
-		console.log('_eval ret', ret);
+		//console.log('_eval ret', ret);
 		return	ret;
 	} catch (e) {
 		console.log('eval>', s);
@@ -1277,7 +1277,7 @@ const handler = async (request, response, config = {}, methods = {}) => {
 	}
 	let rewrited = false;
 	const rewrittenPath = applyRewrites(relativePath, config.rewrites);
-	console.log({rewrittenPath});
+	//console.log({rewrittenPath});
 //	if (!stats && (cleanUrl || rewrittenPath)) {	元々のロジックでは、素のHTMLがない時だけrewriteが発動していた。テンプレート適用機能{{>}}のために潰す
 	if (cleanUrl || rewrittenPath) {
 		try {
