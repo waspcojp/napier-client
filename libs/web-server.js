@@ -1332,7 +1332,7 @@ const readMap = (root) => {
 				//console.log('comment', line);
 			} else
 			if	( items = line.split(/\s+/) )	{
-				console.log(items);
+				//console.log(items);
 				if	( items[0].match(/rewriterule/i) )	{
 					rewrite.push({
 						source: items[1],
@@ -1351,7 +1351,7 @@ const readMap = (root) => {
 			}
 		}
 	}
-	console.log({redirect});
+	//console.log({redirect});
 	return	({
 		rewrite: rewrite,
 		redirect: redirect,
