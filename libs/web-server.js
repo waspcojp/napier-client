@@ -617,18 +617,6 @@ const mdInit = (_path) => {
 	_markdown.renderer.rules.table_open = () => {
 		return '<table class="table table-striped">\n';
 	};
-/*
-	_markdown.renderer.rules.paragraph_open =
-	_markdown.renderer.rules.heading_open = (tokens, idx, options, env, slf) => {
-		let line;
-		if (tokens[idx].map && tokens[idx].level === 0) {
-			line = tokens[idx].map[0];
-			tokens[idx].attrJoin('class', 'line');
-			tokens[idx].attrSet('data-line', String(line));
-		}
-		return slf.renderToken(tokens, idx, options, env, slf);
-	}
-*/
 	return(_markdown);
 }
 
@@ -892,6 +880,7 @@ const getTextContent = async (request, response, session, config, rewrited, abso
 	let params = pathParse(request.url).params;
 	let content = await loadContent(absolutePath, config, true, rewrited, {
 		method: request.method,
+		headers: request.headers,
 		params: params,
 		pathname: relativePath,
 		session: session,
