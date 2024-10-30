@@ -510,7 +510,8 @@ const renderDirectory = async (current, acceptsJSON, handlers, methods, config, 
 	if	( acceptsJSON )	{
 		output = JSON.stringify(spec);
 	} else {
-		output = await loadContent('./libs/directory.ejs', {}, false, false, spec);
+		let content = await loadContent('./libs/directory.ejs', {}, false, false, spec);
+		output = content.data;
 	}
 	return {directory: output};
 };
@@ -598,7 +599,6 @@ const getHandlers = methods => Object.assign({
 
 
 const mdInit = (_path) => {
-	let dir = path.dirname(_path);
 	let _markdown = new MarkdownIt({
 			html:         true,        // Enable HTML tags in source
 			xhtmlOut:     false,        // Use '/' to close single tags (<br />)
@@ -628,7 +628,10 @@ const renderMarkdown = (absolutePath, config, toplevel, opts) => {
 		if	( toplevel )	{
 			return	loadContent('./libs/markdown.html', config, toplevel, false, opts);
 		} else {
-			return	(inner_html);
+			return	({
+				data: inner_html,
+				contentType: 'text/html; charset=utf-8'
+			});
 		}
 	} catch(err)	{
 		console.log('markdown render error', err);
@@ -645,7 +648,10 @@ const renderEJS = (absolutePath, config, opts) => {
 		let html = ejs.render(source, { opts: opts }, {
 			filename: absolutePath
 		});
-		return	(html);
+		return	({
+			data: html,
+			contentType: 'text/html; charset=utf-8'
+		});
 	} catch(err)	{
 		console.log('EJS render error', err);
 		return	('');
@@ -658,32 +664,38 @@ const renderJS = async (absolutePath, config, opts) => {
 		let ret;
 		if	( !opts.method || opts.method === 'GET' )	{
 			//console.log('GET');
-			if	( renderer.get )	{
-				ret = await renderer.get(config, opts);
-			} else {
-				ret = await renderer(config, opts);
+			try {
+				if	( renderer.get )	{
+					ret = await renderer.get(config, opts);
+				} else {
+					ret = await renderer(config, opts);
+				}
+				//console.log({ret});
+			} catch (e) {
+				console.log(e);
 			}
-			//console.log({ret});
 		} else
 		if	( opts.method === 'POST' )	{
 			ret = renderer.post(config, opts);
 		}
-		//console.log('ret', typeof ret, ret);
+		//console.log('ret', ret);
 		if	( !ret )	{
 			return	('');
 		} else
-		if	( typeof ret === 'string' )	{
-			return	(ret);
-		} else {
-			let templatePath;
-			if	( ret.filename )	{
-				templatePath = path.join(current, ret.filename);
-			}
-			//console.log({templatePath});
-			//console.log('data', ret.data);
-			let content = loadContent(templatePath, config, true, false, ret.data);
-			return	(content);
-		}
+    if  ( ret.filename )  {
+      templatePath = path.join(current, ret.filename);
+      let content = loadContent(templatePath, config, true, false, ret.data);
+      return	(content);
+    } else
+    if  ( ret.data )  {
+      return  (ret);
+    } else
+	  if	( typeof ret === 'string' )	{
+      return	({
+        data: ret,
+        contentType: 'text/html; charset=utf-8'
+      });
+    }
 	} catch(err)	{
 		console.log('JS render error', err);
 		return	('');
@@ -768,7 +780,10 @@ const renderHTML = (thisPath,config, opts) => {
 	} catch (e) {
 		console.log('renderHTML', e);
 	}
-	return	(content);
+  return	({
+    data: content,
+    contentType: 'text/html; charset=utf-8'
+  });
 }
 const __eval = (s, _opts) => {
 	opts = _opts ? _opts : undefined;
@@ -877,6 +892,7 @@ const getDirectory = async (request, response, handlers, config, absolutePath, r
 }
 
 const getTextContent = async (request, response, session, config, rewrited, absolutePath, relativePath) => {
+	//console.log('getTextContent', request.url);
 	let params = pathParse(request.url).params;
 	let content = await loadContent(absolutePath, config, true, rewrited, {
 		method: request.method,
@@ -889,8 +905,8 @@ const getTextContent = async (request, response, session, config, rewrited, abso
 	//console.log('content', content);
 	if	( content )	{
 		response.statusCode = 200;
-		response.setHeader('Content-Type', 'text/html; charset=utf-8');
-		response.end(content);
+		response.setHeader('Content-Type', content.contentType);
+		response.end(content.data);
 	
 		return true;
 	} else {
