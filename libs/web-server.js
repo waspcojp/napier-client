@@ -763,7 +763,7 @@ const renderHTML = (thisPath,config, opts) => {
 					}
 					if ( existsSync(componentPath) ) {
 						let ret = loadContent(componentPath, config, false, false, _opts);
-						return	(ret);
+						return	(ret.data);
 					} else {
 						console.log('component not found', componentPath);
 						return	'';
