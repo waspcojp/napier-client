@@ -645,7 +645,7 @@ const renderEJS = (absolutePath, config, opts) => {
 	//console.log('render EJS', absolutePath, opts);
 	try {
 		let source = readFileSync(absolutePath, 'utf-8');
-		let html = ejs.render(source, { opts: opts }, {
+		let html = ejs.render(source, opts, {
 			filename: absolutePath
 		});
 		return	({
