@@ -4,6 +4,10 @@
   "description": "simple web proxy service client",
   "author": "Masami Ogoshi",
   "homepage": "https://github.com/waspcojp/napier-client",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/waspcojp/napier-client.git"
+  },
   "scripts": {
     "cli": "node ./client/napier-cli.js"
   },
