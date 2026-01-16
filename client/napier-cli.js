@@ -33,7 +33,7 @@ const   parseOptions = () => {
     let opts = program.opts();
     let args = program.args;
 
-    console.log({opts}, args);
+    //console.log({opts}, args);
     if  ( opts.config ) {
         try {
             let config = JSON.parse(fs.readFileSync(opts.config, 'utf-8'));
